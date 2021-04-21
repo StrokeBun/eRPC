@@ -1,5 +1,6 @@
 import entity.User;
 import service.UserService;
+import stub.ClientStub;
 
 /**
  * @description:
@@ -8,7 +9,7 @@ import service.UserService;
  */
 public class Client {
     public static void main(String[] args) {
-        UserService service = (UserService) ClientStub.getStub(UserService.class, 9999);
+        UserService service = (UserService) ClientStub.getStub(UserService.class);
         User user = service.getUser(1, "bzzb");
         if (user != null) {
             System.out.println(user.toString());

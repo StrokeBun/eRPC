@@ -1,3 +1,9 @@
+package stub;
+
+import config.RpcClientConfig;
+import dto.Request;
+import dto.Response;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
@@ -5,18 +11,21 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.Socket;
 
+
 /**
- * @description:
+ * @description: the stub of client
  * @author: Stroke
  * @date: 2021/04/21
  */
 public class ClientStub {
 
-    static Object getStub(Class clazz, int port){
+    public static Object getStub(Class clazz){
         InvocationHandler h = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                Socket socket = new Socket("127.0.0.1",port);
+                String serverIp = RpcClientConfig.getRpcServerIp();
+                int serverPort = RpcClientConfig.getRpcServerPort();
+                Socket socket = new Socket(serverIp, serverPort);
                 ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
                 Request request = new Request();

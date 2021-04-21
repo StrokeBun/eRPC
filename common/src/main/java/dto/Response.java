@@ -1,10 +1,12 @@
+package dto;
+
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.Serializable;
 
 /**
- * @description:
+ * @description: RPC response from server
  * @author: Stroke
  * @date: 2021/04/18
  */

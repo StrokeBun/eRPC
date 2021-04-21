@@ -1,3 +1,4 @@
+package dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +7,7 @@ import java.io.*;
 import java.util.Arrays;
 
 /**
- * @description:
+ * @description: RPC request sent by client
  * @author: Stroke
  * @date: 2021/04/18
  */

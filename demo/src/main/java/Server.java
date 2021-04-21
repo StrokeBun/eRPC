@@ -1,3 +1,5 @@
+import stub.ServerStub;
+
 import java.io.IOException;
 
 /**
@@ -7,7 +9,7 @@ import java.io.IOException;
  */
 public class Server {
     public static void main(String[] args) throws IOException {
-        ServerStub serverStub = new ServerStub(9999);
+        ServerStub serverStub = new ServerStub();
         serverStub.register("service.UserService", "service.UserServiceImpl");
         serverStub.run();
     }
