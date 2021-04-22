@@ -4,6 +4,9 @@
 # dir
 target/
 
+# idea file
+/.idea
+
 # Log file
 *.log
 
