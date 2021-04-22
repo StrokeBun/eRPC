@@ -1,5 +1,8 @@
 package config;
 
+import serialize.JdkSerializer;
+import serialize.Serializer;
+import serialize.SerializerFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -18,22 +21,28 @@ public class RpcClientConfig {
      */
     private static String RPC_SERVER_IP;
     /**
-     * port of RPC Server
+     * Port of RPC Server
      */
     private static int RPC_SERVER_PORT;
 
     /**
-     * rpc client configuration filename
+     * Serializer of RPC
+     */
+    private static Serializer SERIALIZER;
+
+    /**
+     * RPC client configuration filename
      */
     private static final String CLIENT_CONFIGURATION_FILENAME = "rpc-client-config.properties";
     /**
-     * keys of configuration file
+     * Keys of configuration file
      */
     private static final String IP_KEY = "rpc-server-ip";
     private static final String PORT_KEY = "rpc-server-port";
+    private static final String SERIALIZE_KEY = "serialize";
 
     /**
-     * init the configuration
+     * Init the configuration
      */
     private static void init() {
         try {
@@ -43,6 +52,8 @@ public class RpcClientConfig {
                 System.out.println("rpc-client-config.properties miss ip");
             }
             RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
+            String serializerType = properties.getProperty(SERIALIZE_KEY);
+            SERIALIZER = serializerType != null ? SerializerFactory.getSerializer(serializerType) : new JdkSerializer();
 
         } catch (IOException e) {
             System.out.println("miss configuration file rpc-client-config.properties");
@@ -65,4 +76,12 @@ public class RpcClientConfig {
         }
         return RPC_SERVER_IP;
     }
+
+    public static Serializer getSerializer() {
+        if (!haveInitialized) {
+            init();
+        }
+        return SERIALIZER;
+    }
+
 }

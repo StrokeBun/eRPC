@@ -3,10 +3,9 @@ package stub;
 import config.RpcServerConfig;
 import dto.Request;
 import dto.Response;
+import serialize.Serializer;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.ServerSocket;
@@ -23,17 +22,19 @@ public final class ServerStub {
 
     private boolean running;
     private Map<String, String> registerTable;
+    private Serializer serializer;
 
     public ServerStub() {
         running = true;
         registerTable = new HashMap<>();
+        serializer = RpcServerConfig.getSerializer();
     }
 
     public void register(String interfaceName, String implementName) {
         registerTable.put(interfaceName, implementName);
     }
 
-    public void run() throws IOException {
+    public void run() throws IOException, ClassNotFoundException {
         ServerSocket serverSocket = new ServerSocket(RpcServerConfig.getRpcServerPort());
         while(running){
             Socket client = serverSocket.accept();
@@ -43,19 +44,12 @@ public final class ServerStub {
         serverSocket.close();
     }
 
-    public void process(Socket client) {
-        try (ObjectInputStream ois = new ObjectInputStream(client.getInputStream());
-             ObjectOutputStream oos = new ObjectOutputStream(client.getOutputStream())) {
-            Request request = (Request) ois.readObject();
-            String className = request.getClassName();
-            request.setClassName(registerTable.get(className));
-            Response response = getResponse(request);
-            oos.writeObject(response);
-            oos.flush();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-
+    public void process(Socket client) throws IOException, ClassNotFoundException {
+        Request request = serializer.deserialize(client.getInputStream(), Request.class);
+        String className = request.getClassName();
+        request.setClassName(registerTable.get(className));
+        Response response = getResponse(request);
+        serializer.serialize(response, client.getOutputStream());
     }
 
     private static Response getResponse(Request request) {

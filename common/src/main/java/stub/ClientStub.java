@@ -3,9 +3,8 @@ package stub;
 import config.RpcClientConfig;
 import dto.Request;
 import dto.Response;
+import serialize.Serializer;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -19,28 +18,26 @@ import java.net.Socket;
  */
 public class ClientStub {
 
-    public static Object getStub(Class clazz){
+    public static Object getStub(Class clazz, Serializer serializer) {
         InvocationHandler h = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 String serverIp = RpcClientConfig.getRpcServerIp();
                 int serverPort = RpcClientConfig.getRpcServerPort();
                 Socket socket = new Socket(serverIp, serverPort);
-                ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
 
+                // generate request and send to rpc server
                 Request request = new Request();
-                request.setRequestId("1");
+                //request.setRequestId("1");
                 request.setClassName(clazz.getName());
                 request.setMethodName(method.getName());
                 request.setParametersType(method.getParameterTypes());
                 request.setParametersValue(args);
+                serializer.serialize(request, socket.getOutputStream());
 
-                oos.writeObject(request);
-                oos.flush();
-
-
-                ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-                Response response = (Response) ois.readObject();
+                // get response from rpc server
+                Response response = serializer.deserialize(socket.getInputStream(), Response.class);
+                socket.close();
                 if (response.getError() == null) {
                     return response.getResult();
                 } else {
@@ -51,5 +48,10 @@ public class ClientStub {
 
         Object object = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, h);
         return object;
+    }
+
+    public static Object getStub(Class clazz){
+        Serializer serializer = RpcClientConfig.getSerializer();
+        return getStub(clazz, serializer);
     }
 }

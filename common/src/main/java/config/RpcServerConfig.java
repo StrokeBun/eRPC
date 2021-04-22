@@ -1,5 +1,8 @@
 package config;
 
+import serialize.JdkSerializer;
+import serialize.Serializer;
+import serialize.SerializerFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -12,7 +15,14 @@ import java.util.Properties;
  */
 public class RpcServerConfig {
     private static boolean haveInitialized = false;
+    /**
+     * Port of RPC server
+     */
     private static int RPC_SERVER_PORT;
+    /**
+     * serializer of RPC
+     */
+    private static Serializer SERIALIZER;
 
     /**
      * rpc server configuration filename
@@ -22,6 +32,7 @@ public class RpcServerConfig {
      * keys of configuration file
      */
     private static final String PORT_KEY = "rpc-server-port";
+    private static final String SERIALIZE_KEY = "serialize";
 
     /**
      * init the configuration
@@ -30,6 +41,8 @@ public class RpcServerConfig {
         try {
             Properties properties = PropertiesUtils.loadProperties(SERVER_CONFIGURATION_FILENAME);
             RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
+            String serializerType = properties.getProperty(SERIALIZE_KEY);
+            SERIALIZER = serializerType != null ? SerializerFactory.getSerializer(serializerType) : new JdkSerializer();
         } catch (NumberFormatException e) {
             System.err.println("wrong port format");
         }  catch (IOException e) {
@@ -43,5 +56,12 @@ public class RpcServerConfig {
             init();
         }
         return RPC_SERVER_PORT;
+    }
+
+    public static Serializer getSerializer() {
+        if (!haveInitialized) {
+            init();
+        }
+        return SERIALIZER;
     }
 }
