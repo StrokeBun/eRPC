@@ -13,7 +13,7 @@ import java.util.Properties;
  * @author: Stroke
  * @date: 2021/04/21
  */
-public class RpcClientConfig {
+public class RpcClientConfiguration {
     private static boolean haveInitialized = false;
 
     /**

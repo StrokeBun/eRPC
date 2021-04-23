@@ -13,7 +13,7 @@ import java.util.Properties;
  * @author: Stroke
  * @date: 2021/04/21
  */
-public class RpcServerConfig {
+public class RpcServerConfiguration {
     private static boolean haveInitialized = false;
     /**
      * Port of RPC server

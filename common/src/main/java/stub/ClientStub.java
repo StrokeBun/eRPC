@@ -1,6 +1,6 @@
 package stub;
 
-import config.RpcClientConfig;
+import config.RpcClientConfiguration;
 import dto.Request;
 import dto.Response;
 import serialize.Serializer;
@@ -22,8 +22,8 @@ public class ClientStub {
         InvocationHandler h = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                String serverIp = RpcClientConfig.getRpcServerIp();
-                int serverPort = RpcClientConfig.getRpcServerPort();
+                String serverIp = RpcClientConfiguration.getRpcServerIp();
+                int serverPort = RpcClientConfiguration.getRpcServerPort();
                 Socket socket = new Socket(serverIp, serverPort);
 
                 // generate request and send to rpc server
@@ -51,7 +51,7 @@ public class ClientStub {
     }
 
     public static Object getStub(Class clazz){
-        Serializer serializer = RpcClientConfig.getSerializer();
+        Serializer serializer = RpcClientConfiguration.getSerializer();
         return getStub(clazz, serializer);
     }
 }
