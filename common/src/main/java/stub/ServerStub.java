@@ -4,13 +4,14 @@ import config.RpcServerConfiguration;
 import dto.Request;
 import dto.Response;
 import lombok.SneakyThrows;
+import registry.ServiceRegistry;
+import registry.zookeeper.ZookeeperServiceRegistry;
 import serialize.Serializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -27,16 +28,25 @@ public final class ServerStub {
     private Map<String, String> registerTable;
     private Serializer serializer;
     private ExecutorService threadPool;
+    private ServiceRegistry serviceRegistry;
+
+    public static ServerStub getStub() {
+        return new ServerStub();
+    }
 
     public ServerStub() {
         running = true;
         registerTable = new HashMap<>();
         serializer = RpcServerConfiguration.getSerializer();
         threadPool = Executors.newFixedThreadPool(10);
+        serviceRegistry = new ZookeeperServiceRegistry();
     }
 
-    public void register(String interfaceName, String implementName) {
+    public void register(String interfaceName, String implementName) throws UnknownHostException {
         registerTable.put(interfaceName, implementName);
+        String ip = InetAddress.getLocalHost().getHostAddress();
+        InetSocketAddress address = new InetSocketAddress(ip, RpcServerConfiguration.getRpcServerPort());
+        serviceRegistry.registerService(interfaceName, address);
     }
 
     public void run() throws IOException {

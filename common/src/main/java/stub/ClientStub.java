@@ -1,13 +1,17 @@
 package stub;
 
 import config.RpcClientConfiguration;
+import config.RpcServerConfiguration;
 import dto.Request;
 import dto.Response;
+import registry.ServiceDiscovery;
+import registry.zookeeper.ZookeeperServiceDiscovery;
 import serialize.Serializer;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 
 
@@ -22,9 +26,10 @@ public class ClientStub {
         InvocationHandler h = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                String serverIp = RpcClientConfiguration.getRpcServerIp();
-                int serverPort = RpcClientConfiguration.getRpcServerPort();
-                Socket socket = new Socket(serverIp, serverPort);
+                // discover the rpc server ip
+                ServiceDiscovery discovery = RpcClientConfiguration.getServiceDiscovery();
+                InetSocketAddress address = discovery.discoverService(clazz.getName());
+                Socket socket = new Socket(address.getAddress(), address.getPort());
 
                 // generate request and send to rpc server
                 Request request = new Request();

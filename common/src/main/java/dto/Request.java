@@ -15,12 +15,21 @@ import java.util.Arrays;
 @Setter
 public class Request implements Serializable {
     private static final long serialVersionUID = 2L;
+    private static long CURRENT_REQUEST_ID = 1;
 
     private String requestId;
     private String className;
     private String methodName;
     private Class<?>[] parametersType;
     private Object[] parametersValue;
+
+    public Request() {
+        requestId = String.valueOf(generateNextId());
+    }
+
+    private long generateNextId() {
+        return CURRENT_REQUEST_ID++;
+    }
 
     @Override
     public String toString() {

@@ -9,7 +9,7 @@ import java.io.IOException;
  */
 public class Server {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        ServerStub serverStub = new ServerStub();
+        ServerStub serverStub = ServerStub.getStub();
         serverStub.register("service.UserService", "service.UserServiceImpl");
         serverStub.run();
     }

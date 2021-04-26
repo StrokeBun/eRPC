@@ -14,6 +14,7 @@ import java.util.Properties;
  * @date: 2021/04/21
  */
 public class RpcServerConfiguration {
+
     private static boolean haveInitialized = false;
     /**
      * Port of RPC server
