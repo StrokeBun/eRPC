@@ -28,6 +28,7 @@ public final class ServerStub {
     private Map<String, String> registerTable;
     private Serializer serializer;
     private ExecutorService threadPool;
+    private String registryAddress;
     private ServiceRegistry serviceRegistry;
 
     public static ServerStub getStub() {
@@ -39,7 +40,8 @@ public final class ServerStub {
         registerTable = new HashMap<>();
         serializer = RpcServerConfiguration.getSerializer();
         threadPool = Executors.newFixedThreadPool(10);
-        serviceRegistry = new ZookeeperServiceRegistry();
+        registryAddress = "127.0.0.1:2181";
+        serviceRegistry = new ZookeeperServiceRegistry(registryAddress);
     }
 
     public void register(String interfaceName, String implementName) throws UnknownHostException {

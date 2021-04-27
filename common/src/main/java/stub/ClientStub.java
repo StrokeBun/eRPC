@@ -1,7 +1,6 @@
 package stub;
 
 import config.RpcClientConfiguration;
-import config.RpcServerConfiguration;
 import dto.Request;
 import dto.Response;
 import registry.ServiceDiscovery;
@@ -13,7 +12,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-
 
 /**
  * @description: the stub of client
@@ -27,7 +25,7 @@ public class ClientStub {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 // discover the rpc server ip
-                ServiceDiscovery discovery = RpcClientConfiguration.getServiceDiscovery();
+                ServiceDiscovery discovery = new ZookeeperServiceDiscovery("127.0.0.1:2181");
                 InetSocketAddress address = discovery.discoverService(clazz.getName());
                 Socket socket = new Socket(address.getAddress(), address.getPort());
 

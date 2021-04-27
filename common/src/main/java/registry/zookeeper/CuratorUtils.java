@@ -26,8 +26,7 @@ public class CuratorUtils {
     public static final String ZK_REGISTER_ROOT_PATH = "/e-rpc";
     private static final Map<String, List<String>> SERVICE_ADDRESS_MAP = new ConcurrentHashMap<>();
     private static final Set<String> REGISTERED_PATH_SET = ConcurrentHashMap.newKeySet();
-    private static CuratorFramework zkClient;
-
+    private static final Map<String, CuratorFramework> ZK_CLIENT_MAP = new ConcurrentHashMap<>();
     private CuratorUtils() {
     }
 
@@ -56,9 +55,9 @@ public class CuratorUtils {
      * @return All child nodes under the specified node
      */
     public static List<String> getChildrenNodes(CuratorFramework zkClient, String rpcServiceName) {
-        //if (SERVICE_ADDRESS_MAP.containsKey(rpcServiceName)) {
-        //    return SERVICE_ADDRESS_MAP.get(rpcServiceName);
-        //}
+        if (SERVICE_ADDRESS_MAP.containsKey(rpcServiceName)) {
+            return SERVICE_ADDRESS_MAP.get(rpcServiceName);
+        }
         List<String> result = null;
         String servicePath = ZK_REGISTER_ROOT_PATH + "/" + rpcServiceName;
         try {
@@ -85,8 +84,8 @@ public class CuratorUtils {
         });
     }
 
-    public static CuratorFramework getZkClient() {
-        String zookeeperAddress = "127.0.0.1:2181";
+    public static CuratorFramework getZkClient(String zookeeperAddress) {
+        CuratorFramework zkClient = ZK_CLIENT_MAP.get(zookeeperAddress);
         // if zkClient has been started, return directly
         if (zkClient != null && zkClient.getState() == CuratorFrameworkState.STARTED) {
             return zkClient;
@@ -107,10 +106,8 @@ public class CuratorUtils {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        ZK_CLIENT_MAP.put(zookeeperAddress, zkClient);
         return zkClient;
     }
 
-    public static void main(String[] args) {
-        System.out.println("hello");
-    }
 }

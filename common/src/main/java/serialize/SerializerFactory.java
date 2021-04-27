@@ -1,29 +1,26 @@
 package serialize;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
- * @description: Factory of serializer.
+ * @description: Singleton factory of serializer.
  * @author: Stroke
  * @date: 2021/04/22
  */
 public final class SerializerFactory {
 
-    public static Serializer getSerializer(String type) {
-        switch (type) {
-            case "jdk": {
-                return new JdkSerializer();
-            }
-            case "hessian": {
-                return new HessianSerializer();
-            }
-            case "kryo": {
-                return new KryoSerializer();
-            }
-            case "protostuff": {
-                return new ProtostuffSerializer();
-            }
-            default:
-                return null;
+    private static Map<String, Serializer> SERIALIZER_MAP = new ConcurrentHashMap<String, Serializer>() {
+        {
+            put("jdk", new JdkSerializer());
+            put("hessian", new HessianSerializer());
+            put("kryo", new KryoSerializer());
+            put("protostuff", new ProtostuffSerializer());
         }
+    };
+
+    public static Serializer getSerializer(String type) {
+        return SERIALIZER_MAP.get(type);
     }
 
     private SerializerFactory() {
