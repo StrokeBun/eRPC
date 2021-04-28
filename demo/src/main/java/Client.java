@@ -9,7 +9,7 @@ import stub.ClientStub;
  */
 public class Client {
     public static void main(String[] args) {
-        UserService service = (UserService) ClientStub.getStub(UserService.class);
+        UserService service = (UserService) ClientStub.getInstance(UserService.class);
         User user = service.getUser(1, "bzzb");
         if (user != null) {
             System.out.println(user.toString());

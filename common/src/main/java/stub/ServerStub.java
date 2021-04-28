@@ -5,7 +5,6 @@ import dto.Request;
 import dto.Response;
 import lombok.SneakyThrows;
 import registry.ServiceRegistry;
-import registry.zookeeper.ZookeeperServiceRegistry;
 import serialize.Serializer;
 
 import java.io.IOException;
@@ -31,17 +30,17 @@ public final class ServerStub {
     private String registryAddress;
     private ServiceRegistry serviceRegistry;
 
-    public static ServerStub getStub() {
+    public static ServerStub getInstance() {
         return new ServerStub();
     }
+
 
     public ServerStub() {
         running = true;
         registerTable = new HashMap<>();
         serializer = RpcServerConfiguration.getSerializer();
         threadPool = Executors.newFixedThreadPool(10);
-        registryAddress = "127.0.0.1:2181";
-        serviceRegistry = new ZookeeperServiceRegistry(registryAddress);
+        serviceRegistry = RpcServerConfiguration.getDefaultServiceRegistry();
     }
 
     public void register(String interfaceName, String implementName) throws UnknownHostException {
@@ -123,5 +122,4 @@ public final class ServerStub {
         }
 
     }
-
 }

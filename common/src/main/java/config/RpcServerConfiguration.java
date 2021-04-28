@@ -1,5 +1,7 @@
 package config;
 
+import registry.ServiceRegistry;
+import registry.factory.ServiceRegistryFactory;
 import serialize.JdkSerializer;
 import serialize.Serializer;
 import serialize.SerializerFactory;
@@ -15,7 +17,6 @@ import java.util.Properties;
  */
 public class RpcServerConfiguration {
 
-    private static boolean haveInitialized = false;
     /**
      * Port of RPC server
      */
@@ -24,6 +25,10 @@ public class RpcServerConfiguration {
      * serializer of RPC
      */
     private static Serializer SERIALIZER;
+    /**
+     * Default service registry of RPC server
+     */
+    private static ServiceRegistry DEFAULT_SERVICE_REGISTRY;
 
     /**
      * rpc server configuration filename
@@ -34,35 +39,46 @@ public class RpcServerConfiguration {
      */
     private static final String PORT_KEY = "rpc-server-port";
     private static final String SERIALIZE_KEY = "serialize";
+    private static final String REGISTRY_SERVER_TYPE_KEY = "registry-server-type";
+    private static final String REGISTRY_SERVER_ADDRESS_KEY = "registry-server-address";
 
     /**
      * init the configuration
      */
-    private static void init() {
+    static {
         try {
             Properties properties = PropertiesUtils.loadProperties(SERVER_CONFIGURATION_FILENAME);
+            // get the port of RPC server
             RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
+            // get the type of serialize, default jdk serialize
             String serializerType = properties.getProperty(SERIALIZE_KEY);
             SERIALIZER = serializerType != null ? SerializerFactory.getSerializer(serializerType) : new JdkSerializer();
+
+            String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
+            if (registryServerType == null) {
+                throw new UnsupportedOperationException("miss registry server type");
+            }
+            String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
+            if (address == null) {
+                throw new UnsupportedOperationException("miss registry server address");
+            }
+            DEFAULT_SERVICE_REGISTRY = ServiceRegistryFactory.newInstance(registryServerType, address);
         } catch (NumberFormatException e) {
-            System.err.println("wrong port format");
+           throw new UnsupportedOperationException("wrong port format");
         }  catch (IOException e) {
-            System.err.println("miss configuration \"file rpc-server-config.properties\"");
+            throw new UnsupportedOperationException("miss configuration \"file rpc-server-config.properties\"");
         }
-        haveInitialized = true;
     }
 
     public static int getRpcServerPort() {
-        if (!haveInitialized) {
-            init();
-        }
         return RPC_SERVER_PORT;
     }
 
     public static Serializer getSerializer() {
-        if (!haveInitialized) {
-            init();
-        }
         return SERIALIZER;
+    }
+
+    public static ServiceRegistry getDefaultServiceRegistry() {
+        return DEFAULT_SERVICE_REGISTRY;
     }
 }

@@ -20,7 +20,11 @@ public final class SerializerFactory {
     };
 
     public static Serializer getSerializer(String type) {
-        return SERIALIZER_MAP.get(type);
+        final Serializer serializer = SERIALIZER_MAP.get(type);
+        if (serializer == null) {
+            throw new UnsupportedOperationException("type not supported");
+        }
+        return serializer;
     }
 
     private SerializerFactory() {

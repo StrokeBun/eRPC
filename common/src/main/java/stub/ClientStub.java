@@ -20,18 +20,26 @@ import java.net.Socket;
  */
 public class ClientStub {
 
-    public static Object getStub(Class clazz, Serializer serializer) {
+    public static Object getInstance(Class clazz, Serializer serializer, ServiceDiscovery discovery) {
+
         InvocationHandler h = new InvocationHandler() {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-                // discover the rpc server ip
-                ServiceDiscovery discovery = new ZookeeperServiceDiscovery("127.0.0.1:2181");
+                // if the method is from Object, invoke directly
+                try {
+                    if (Object.class.equals(method.getDeclaringClass())) {
+                        return method.invoke(this, args);
+                    }
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                }
+                
+                // discover the rpc server socket address
                 InetSocketAddress address = discovery.discoverService(clazz.getName());
                 Socket socket = new Socket(address.getAddress(), address.getPort());
 
-                // generate request and send to rpc server
+                // generate request and send it to rpc server
                 Request request = new Request();
-                //request.setRequestId("1");
                 request.setClassName(clazz.getName());
                 request.setMethodName(method.getName());
                 request.setParametersType(method.getParameterTypes());
@@ -41,11 +49,7 @@ public class ClientStub {
                 // get response from rpc server
                 Response response = serializer.deserialize(socket.getInputStream(), Response.class);
                 socket.close();
-                if (response.getError() == null) {
-                    return response.getResult();
-                } else {
-                    return null;
-                }
+                return response.getError() == null? response.getResult():null;
             }
         };
 
@@ -53,8 +57,14 @@ public class ClientStub {
         return object;
     }
 
-    public static Object getStub(Class clazz){
-        Serializer serializer = RpcClientConfiguration.getSerializer();
-        return getStub(clazz, serializer);
+    public static Object getInstance(Class clazz, Serializer serializer) {
+        final ServiceDiscovery discovery = RpcClientConfiguration.getDefaultServiceDiscovery();
+        return getInstance(clazz, serializer, discovery);
     }
+
+    public static Object getInstance(Class clazz){
+        final Serializer defaultSerializer = RpcClientConfiguration.getDefaultSerializer();
+        return getInstance(clazz, defaultSerializer);
+    }
+
 }

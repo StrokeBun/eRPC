@@ -1,3 +1,4 @@
+import registry.zookeeper.CuratorUtils;
 import stub.ServerStub;
 
 import java.io.IOException;
@@ -9,7 +10,7 @@ import java.io.IOException;
  */
 public class Server {
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        ServerStub serverStub = ServerStub.getStub();
+        ServerStub serverStub = ServerStub.getInstance();
         serverStub.register("service.UserService", "service.UserServiceImpl");
         serverStub.run();
     }
