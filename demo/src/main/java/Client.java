@@ -1,4 +1,8 @@
 import entity.User;
+import registry.ServiceDiscovery;
+import registry.zookeeper.ZookeeperServiceDiscovery;
+import serialize.JdkSerializer;
+import serialize.Serializer;
 import service.UserService;
 import stub.ClientStub;
 
@@ -9,7 +13,10 @@ import stub.ClientStub;
  */
 public class Client {
     public static void main(String[] args) {
-        UserService service = (UserService) ClientStub.getInstance(UserService.class);
+        Serializer serializer = new JdkSerializer();
+        ServiceDiscovery discovery = new ZookeeperServiceDiscovery("127.0.0.1:2181");
+        ClientStub stub = new ClientStub(serializer, discovery);
+        UserService service = (UserService) stub.getInstance(UserService.class);
         User user = service.getUser(1, "bzzb");
         if (user != null) {
             System.out.println(user.toString());

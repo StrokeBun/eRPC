@@ -1,5 +1,8 @@
 package config;
 
+import exception.ConfigurationException;
+import exception.enums.ConfigurationErrorMessageEnum;
+import org.checkerframework.checker.units.qual.C;
 import registry.ServiceDiscovery;
 import registry.factory.ServiceDiscoveryFactory;
 import serialize.JdkSerializer;
@@ -11,14 +14,19 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * @description: Configuration of client
+ * @description: Configuration of client.
  * @author: Stroke
  * @date: 2021/04/21
  */
 public class RpcClientConfiguration {
 
     /**
-     * Serializer of RPC client
+     * RPC client configuration filename
+     */
+    private static final String CLIENT_CONFIGURATION_FILENAME = "rpc-client-config.properties";
+
+    /**
+     * Default serializer of RPC client
      */
     private static Serializer DEFAULT_SERIALIZER;
 
@@ -26,11 +34,6 @@ public class RpcClientConfiguration {
      * Default service discovery of RPC client
      */
     private static ServiceDiscovery DEFAULT_SERVICE_DISCOVERY;
-
-    /**
-     * RPC client configuration filename
-     */
-    private static final String CLIENT_CONFIGURATION_FILENAME = "rpc-client-config.properties";
 
     /**
      * Keys of configuration file
@@ -51,17 +54,15 @@ public class RpcClientConfiguration {
 
             String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
             if (registryServerType == null) {
-                throw new UnsupportedOperationException("miss registry server type");
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
             }
             String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
             if (address == null) {
-                throw new UnsupportedOperationException("miss registry server address");
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_ADDRESS);
             }
             DEFAULT_SERVICE_DISCOVERY = ServiceDiscoveryFactory.newInstance(registryServerType, address);
         } catch (IOException e) {
-            throw new UnsupportedOperationException("miss configuration file rpc-client-config.properties");
-        } catch (NumberFormatException e) {
-            throw new UnsupportedOperationException("wrong port format");
+            throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_CLIENT_CONFIGURATION_FILE);
         }
     }
 

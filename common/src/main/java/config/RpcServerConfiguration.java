@@ -1,5 +1,7 @@
 package config;
 
+import exception.ConfigurationException;
+import exception.enums.ConfigurationErrorMessageEnum;
 import registry.ServiceRegistry;
 import registry.factory.ServiceRegistryFactory;
 import serialize.JdkSerializer;
@@ -18,6 +20,11 @@ import java.util.Properties;
 public class RpcServerConfiguration {
 
     /**
+     * rpc server configuration filename
+     */
+    private static final String SERVER_CONFIGURATION_FILENAME = "rpc-server-config.properties";
+
+    /**
      * Port of RPC server
      */
     private static int RPC_SERVER_PORT;
@@ -30,10 +37,6 @@ public class RpcServerConfiguration {
      */
     private static ServiceRegistry DEFAULT_SERVICE_REGISTRY;
 
-    /**
-     * rpc server configuration filename
-     */
-    private static final String SERVER_CONFIGURATION_FILENAME = "rpc-server-config.properties";
     /**
      * keys of configuration file
      */
@@ -56,17 +59,17 @@ public class RpcServerConfiguration {
 
             String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
             if (registryServerType == null) {
-                throw new UnsupportedOperationException("miss registry server type");
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
             }
             String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
             if (address == null) {
-                throw new UnsupportedOperationException("miss registry server address");
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_ADDRESS);
             }
             DEFAULT_SERVICE_REGISTRY = ServiceRegistryFactory.newInstance(registryServerType, address);
         } catch (NumberFormatException e) {
-           throw new UnsupportedOperationException("wrong port format");
+           throw new ConfigurationException(ConfigurationErrorMessageEnum.WRONG_PORT_FORMAT);
         }  catch (IOException e) {
-            throw new UnsupportedOperationException("miss configuration \"file rpc-server-config.properties\"");
+            throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_SERVER_CONFIGURATION_FILE);
         }
     }
 

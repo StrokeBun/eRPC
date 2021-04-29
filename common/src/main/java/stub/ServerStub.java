@@ -3,6 +3,7 @@ package stub;
 import config.RpcServerConfiguration;
 import dto.Request;
 import dto.Response;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import registry.ServiceRegistry;
 import serialize.Serializer;
@@ -21,48 +22,56 @@ import java.util.concurrent.Executors;
  * @author: Stroke
  * @date: 2021/04/21
  */
+@AllArgsConstructor
 public final class ServerStub {
 
-    private boolean running;
-    private Map<String, String> registerTable;
+    private int serverPort;
     private Serializer serializer;
-    private ExecutorService threadPool;
-    private String registryAddress;
     private ServiceRegistry serviceRegistry;
-
-    public static ServerStub getInstance() {
-        return new ServerStub();
-    }
-
+    private Map<String, String> registerTable;
+    private ExecutorService threadPool;
 
     public ServerStub() {
-        running = true;
-        registerTable = new HashMap<>();
+        serverPort = RpcServerConfiguration.getRpcServerPort();
         serializer = RpcServerConfiguration.getSerializer();
-        threadPool = Executors.newFixedThreadPool(10);
         serviceRegistry = RpcServerConfiguration.getDefaultServiceRegistry();
+        init();
+    }
+
+    public ServerStub(int serverPort, Serializer serializer, ServiceRegistry serviceRegistry) {
+        this.serverPort = serverPort;
+        this.serializer = serializer;
+        this.serviceRegistry = serviceRegistry;
+        init();
+    }
+
+    private void init() {
+        registerTable = new HashMap<>();
+        threadPool = Executors.newFixedThreadPool(10);
     }
 
     public void register(String interfaceName, String implementName) throws UnknownHostException {
         registerTable.put(interfaceName, implementName);
         String ip = InetAddress.getLocalHost().getHostAddress();
-        InetSocketAddress address = new InetSocketAddress(ip, RpcServerConfiguration.getRpcServerPort());
+        InetSocketAddress address = new InetSocketAddress(ip, serverPort);
         serviceRegistry.registerService(interfaceName, address);
     }
 
     public void run() throws IOException {
-        ServerSocket serverSocket = new ServerSocket(RpcServerConfiguration.getRpcServerPort());
-        while(running){
-            Socket client = serverSocket.accept();
-            threadPool.submit(new RequestHandler(client));
+        try (ServerSocket serverSocket = new ServerSocket(serverPort)) {
+            while(true){
+                Socket client = serverSocket.accept();
+                threadPool.submit(new RequestHandler(client));
+            }
+        } finally {
+            threadPool.shutdown();
         }
-        serverSocket.close();
     }
 
     /**
      * Handle the RPC request.
      */
-    public class RequestHandler implements Runnable {
+    private class RequestHandler implements Runnable {
         private Socket socket;
 
         public RequestHandler(Socket socket) {
@@ -88,6 +97,7 @@ public final class ServerStub {
         private Response getResponse(Request request) {
             Object result = null;
             Response response = new Response();
+            response.setResponseId(request.getRequestId());
             try {
                 result = invoke(request);
             } catch (ClassNotFoundException e) {
@@ -105,12 +115,7 @@ public final class ServerStub {
         /**
          * Use reflection to invoke the method.
          * @param request RPC request from client
-         * @return
-         * @throws ClassNotFoundException
-         * @throws NoSuchMethodException
-         * @throws IllegalAccessException
-         * @throws InstantiationException
-         * @throws InvocationTargetException
+         * @return result object
          */
         private Object invoke(Request request) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
             String className = request.getClassName();
