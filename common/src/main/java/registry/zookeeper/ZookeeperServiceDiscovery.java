@@ -14,18 +14,17 @@ import java.util.List;
  */
 public class ZookeeperServiceDiscovery extends BaseServiceDiscovery implements ServiceDiscovery {
 
-    public ZookeeperServiceDiscovery(String registryAddress) {
-        super(registryAddress);
+    public ZookeeperServiceDiscovery(String registryServerAddress) {
+        super(registryServerAddress);
     }
 
     @Override
     public InetSocketAddress discoverService(String serviceName) {
-        CuratorFramework zkClient = CuratorUtils.getZkClient(registryAddress);
+        CuratorFramework zkClient = CuratorUtils.getZkClient(registryServerAddress);
         List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, serviceName);
-        if (serviceUrlList == null || serviceUrlList.size() == 0) {
-            throw new RuntimeException();
-        }
-        // load balancing
+        checkUrls(serviceUrlList);
+
+        // load balance
         String targetServiceUrl = serviceUrlList.get(0);
         String[] socketAddressArray = targetServiceUrl.split(":");
         String host = socketAddressArray[0];

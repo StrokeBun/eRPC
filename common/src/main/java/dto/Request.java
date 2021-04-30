@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.UUID;
 
 /**
  * @description: RPC request sent by client

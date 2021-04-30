@@ -1,6 +1,6 @@
-package registry.factory;
+package registry;
 
-import registry.ServiceDiscovery;
+import registry.redis.RedisServiceDiscovery;
 import registry.zookeeper.ZookeeperServiceDiscovery;
 
 /**
@@ -14,6 +14,9 @@ public class ServiceDiscoveryFactory {
         switch (type) {
             case "zk": {
                 return new ZookeeperServiceDiscovery(address);
+            }
+            case "redis": {
+                return new RedisServiceDiscovery(address);
             }
         }
         return null;

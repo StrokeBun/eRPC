@@ -1,8 +1,11 @@
 package registry;
 
+import exception.RpcException;
+import exception.enums.RpcErrorMessageEnum;
+
 import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
+
 
 /**
  * @description:
@@ -11,14 +14,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class BaseServiceDiscovery implements ServiceDiscovery {
 
-    private static Map<String, ServiceDiscovery> discoveryMap = new ConcurrentHashMap<>();
+    protected String registryServerAddress;
 
-    protected String registryAddress;
-
-    public BaseServiceDiscovery(String registryAddress) {
-        this.registryAddress = registryAddress;
+    public BaseServiceDiscovery(String registryServerAddress) {
+        this.registryServerAddress = registryServerAddress;
     }
 
     @Override
     public abstract InetSocketAddress discoverService(String serviceName);
+
+    protected void checkUrls(List<String> urls) {
+        if (urls == null || urls.size() == 0) {
+            throw new RpcException(RpcErrorMessageEnum.SERVICE_CANT_BE_FOUND);
+        }
+    }
 }

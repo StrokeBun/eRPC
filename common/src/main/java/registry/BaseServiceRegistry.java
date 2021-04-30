@@ -9,10 +9,10 @@ import java.net.InetSocketAddress;
  */
 public abstract class BaseServiceRegistry implements ServiceRegistry {
 
-    protected String registryAddress;
+    protected String registryServerAddress;
 
-    public BaseServiceRegistry(String registryAddress) {
-        this.registryAddress = registryAddress;
+    public BaseServiceRegistry(String registryServerAddress) {
+        this.registryServerAddress = registryServerAddress;
     }
 
     public abstract void registerService(String serviceName, InetSocketAddress address);

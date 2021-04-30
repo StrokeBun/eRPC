@@ -2,12 +2,11 @@ package config;
 
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
-import org.checkerframework.checker.units.qual.C;
 import registry.ServiceDiscovery;
-import registry.factory.ServiceDiscoveryFactory;
+import registry.ServiceDiscoveryFactory;
 import serialize.JdkSerializer;
 import serialize.Serializer;
-import serialize.SerializerFactory;
+import serialize.SingletonSerializerFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -50,7 +49,7 @@ public class RpcClientConfiguration {
             Properties properties = PropertiesUtils.loadProperties(CLIENT_CONFIGURATION_FILENAME);
             // get the type of serialize, default jdk serialize
             String serializerType = properties.getProperty(SERIALIZE_KEY);
-            DEFAULT_SERIALIZER = serializerType != null ? SerializerFactory.getSerializer(serializerType) : new JdkSerializer();
+            DEFAULT_SERIALIZER = serializerType != null ? SingletonSerializerFactory.getSerializer(serializerType) : new JdkSerializer();
 
             String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
             if (registryServerType == null) {

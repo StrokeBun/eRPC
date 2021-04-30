@@ -1,6 +1,6 @@
-package registry.factory;
+package registry;
 
-import registry.ServiceRegistry;
+import registry.redis.RedisServiceRegistry;
 import registry.zookeeper.ZookeeperServiceRegistry;
 
 /**
@@ -14,6 +14,9 @@ public class ServiceRegistryFactory {
         switch (type) {
             case "zk": {
                 return new ZookeeperServiceRegistry(address);
+            }
+            case "redis": {
+                return new RedisServiceRegistry(address);
             }
         }
         return null;

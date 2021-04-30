@@ -12,14 +12,14 @@ import java.net.InetSocketAddress;
  */
 public class ZookeeperServiceRegistry extends BaseServiceRegistry {
 
-    public ZookeeperServiceRegistry(String registryAddress) {
-        super(registryAddress);
+    public ZookeeperServiceRegistry(String registryServerAddress) {
+        super(registryServerAddress);
     }
 
     @Override
     public void registerService(String serviceName, InetSocketAddress address) {
         String servicePath = CuratorUtils.ZK_REGISTER_ROOT_PATH + "/" + serviceName + address.toString();
-        CuratorFramework zkClient = CuratorUtils.getZkClient(registryAddress);
+        CuratorFramework zkClient = CuratorUtils.getZkClient(registryServerAddress);
         CuratorUtils.createPersistentNode(zkClient, servicePath);
     }
 }

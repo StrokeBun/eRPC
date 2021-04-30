@@ -1,4 +1,4 @@
-package stub;
+package stub.socket;
 
 import config.RpcClientConfiguration;
 import dto.Request;

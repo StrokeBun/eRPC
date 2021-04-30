@@ -3,10 +3,10 @@ package config;
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
 import registry.ServiceRegistry;
-import registry.factory.ServiceRegistryFactory;
+import registry.ServiceRegistryFactory;
 import serialize.JdkSerializer;
 import serialize.Serializer;
-import serialize.SerializerFactory;
+import serialize.SingletonSerializerFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -55,7 +55,7 @@ public class RpcServerConfiguration {
             RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
             // get the type of serialize, default jdk serialize
             String serializerType = properties.getProperty(SERIALIZE_KEY);
-            SERIALIZER = serializerType != null ? SerializerFactory.getSerializer(serializerType) : new JdkSerializer();
+            SERIALIZER = serializerType != null ? SingletonSerializerFactory.getSerializer(serializerType) : new JdkSerializer();
 
             String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
             if (registryServerType == null) {
