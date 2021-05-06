@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author: Stroke
  * @date: 2021/04/26
  */
-public class CuratorUtils {
+class CuratorUtils {
 
     private static final int BASE_SLEEP_TIME = 1000;
     private static final int MAX_RETRIES = 3;

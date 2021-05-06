@@ -1,5 +1,6 @@
 package registry.zookeeper;
 
+import loadbalance.LoadBalance;
 import org.apache.curator.framework.CuratorFramework;
 import registry.BaseServiceDiscovery;
 import registry.ServiceDiscovery;
@@ -18,17 +19,13 @@ public class ZookeeperServiceDiscovery extends BaseServiceDiscovery implements S
         super(registryServerAddress);
     }
 
-    @Override
-    public InetSocketAddress discoverService(String serviceName) {
-        CuratorFramework zkClient = CuratorUtils.getZkClient(registryServerAddress);
-        List<String> serviceUrlList = CuratorUtils.getChildrenNodes(zkClient, serviceName);
-        checkUrls(serviceUrlList);
+    public ZookeeperServiceDiscovery(String registryServerAddress, LoadBalance loadBalance) {
+        super(registryServerAddress, loadBalance);
+    }
 
-        // load balance
-        String targetServiceUrl = serviceUrlList.get(0);
-        String[] socketAddressArray = targetServiceUrl.split(":");
-        String host = socketAddressArray[0];
-        int port = Integer.parseInt(socketAddressArray[1]);
-        return new InetSocketAddress(host, port);
+    @Override
+    protected List<String> getServiceUrlList(String serviceName) {
+        CuratorFramework zkClient = CuratorUtils.getZkClient(registryServerAddress);
+        return CuratorUtils.getChildrenNodes(zkClient, serviceName);
     }
 }

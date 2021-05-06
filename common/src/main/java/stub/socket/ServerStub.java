@@ -65,6 +65,7 @@ public final class ServerStub {
             }
         } finally {
             threadPool.shutdown();
+            // todo: remove the registry service
         }
     }
 

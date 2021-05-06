@@ -19,6 +19,6 @@ public class RedisServiceRegistry extends BaseServiceRegistry {
     @Override
     public void registerService(String serviceName, InetSocketAddress address) {
         RedisClient redisClient = RedisUtils.getRedisClient(registryServerAddress);
-        RedisUtils.add(redisClient, serviceName, address.toString());
+        RedisUtils.add(redisClient, serviceName, address.toString().substring(1));
     }
 }

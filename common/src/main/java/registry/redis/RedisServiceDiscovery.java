@@ -1,9 +1,9 @@
 package registry.redis;
 
 import io.lettuce.core.RedisClient;
+import loadbalance.LoadBalance;
 import registry.BaseServiceDiscovery;
 
-import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,17 +18,13 @@ public class RedisServiceDiscovery extends BaseServiceDiscovery {
         super(registryServerAddress);
     }
 
-    @Override
-    public InetSocketAddress discoverService(String serviceName) {
-        RedisClient redisClient = RedisUtils.getRedisClient(registryServerAddress);
-        List<String> serviceUrlList = new ArrayList<>(RedisUtils.get(redisClient, serviceName));
-        checkUrls(serviceUrlList);
+    public RedisServiceDiscovery(String registryServerAddress, LoadBalance loadBalance) {
+        super(registryServerAddress, loadBalance);
+    }
 
-        // todo: load balance
-        String targetServiceUrl = serviceUrlList.get(0);
-        String[] socketAddressArray = targetServiceUrl.split(":");
-        String host = socketAddressArray[0].substring(1);
-        int port = Integer.parseInt(socketAddressArray[1]);
-        return new InetSocketAddress(host, port);
+    @Override
+    protected List<String> getServiceUrlList(String serviceName) {
+        RedisClient redisClient = RedisUtils.getRedisClient(registryServerAddress);
+        return new ArrayList<>(RedisUtils.get(redisClient, serviceName));
     }
 }

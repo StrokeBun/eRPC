@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/04/30
  */
-public class RedisUtils {
+class RedisUtils {
 
     private static final Map<String, RedisClient> REDIS_CLIENT_MAP = new ConcurrentHashMap<>();
 
