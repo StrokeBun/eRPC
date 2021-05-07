@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description:
+ * @description: redis utils
  * @author: Stroke
  * @date: 2021/04/30
  */
@@ -21,6 +21,13 @@ class RedisUtils {
         try (StatefulRedisConnection connection = client.connect()) {
             RedisSetCommands<String, String> sync = connection.sync();
             sync.sadd(key, url);
+        }
+    }
+
+    public static void remove(RedisClient client, String key, String url) {
+        try (StatefulRedisConnection connection = client.connect()) {
+            RedisSetCommands<String, String> sync = connection.sync();
+            sync.srem(key, url);
         }
     }
 

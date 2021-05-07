@@ -1,5 +1,6 @@
 package dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ import java.util.Arrays;
  */
 @Getter
 @Setter
+@Builder
 public class Request implements Serializable {
     private static final long serialVersionUID = 2L;
     private String requestId;

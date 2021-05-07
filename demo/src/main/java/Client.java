@@ -21,7 +21,7 @@ public class Client {
         //ServiceDiscovery discovery = new RedisServiceDiscovery("localhost");
         //ClientStub stub = new ClientStub(serializer, discovery);
         ClientStub stub = new ClientStub();
-        UserService service = (UserService) stub.getInstance(UserService.class);
+        UserService service = stub.getInstance(UserService.class);
 
         User user = service.getUser(1, "bzzb");
         if (user != null) {

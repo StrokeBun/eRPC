@@ -6,7 +6,7 @@ import registry.BaseServiceRegistry;
 import java.net.InetSocketAddress;
 
 /**
- * @description:
+ * @description: register service based on redis
  * @author: Stroke
  * @date: 2021/04/30
  */
@@ -20,5 +20,11 @@ public class RedisServiceRegistry extends BaseServiceRegistry {
     public void registerService(String serviceName, InetSocketAddress address) {
         RedisClient redisClient = RedisUtils.getRedisClient(registryServerAddress);
         RedisUtils.add(redisClient, serviceName, address.toString().substring(1));
+    }
+
+    @Override
+    public void removeService(String serviceName, InetSocketAddress address) {
+        RedisClient redisClient = RedisUtils.getRedisClient(registryServerAddress);
+        RedisUtils.remove(redisClient, serviceName, address.toString().substring(1));
     }
 }

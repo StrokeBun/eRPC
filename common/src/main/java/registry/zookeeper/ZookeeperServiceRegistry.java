@@ -22,4 +22,11 @@ public class ZookeeperServiceRegistry extends BaseServiceRegistry {
         CuratorFramework zkClient = CuratorUtils.getZkClient(registryServerAddress);
         CuratorUtils.createPersistentNode(zkClient, servicePath);
     }
+
+    @Override
+    public void removeService(String serviceName, InetSocketAddress address) {
+        String servicePath = serviceName + address.toString();
+        CuratorFramework zkClient = CuratorUtils.getZkClient(registryServerAddress);
+        CuratorUtils.clearRegistry(zkClient, servicePath);
+    }
 }

@@ -3,7 +3,7 @@ package loadbalance;
 import java.util.List;
 
 /**
- * @description:
+ * @description: default load balance, always return first address
  * @author: Stroke
  * @date: 2021/05/06
  */

@@ -20,7 +20,7 @@ public class HessianSerializer implements Serializer {
     }
 
     @Override
-    public <T> T deserialize(InputStream is,Class<T> clazz) throws IOException {
+    public <T> T deserialize(InputStream is, Class<T> clazz) throws IOException {
         Hessian2Input input = new Hessian2Input(is);
         return (T)input.readObject();
     }

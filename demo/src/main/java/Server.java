@@ -18,7 +18,7 @@ public class Server {
         //ServiceRegistry registry = new RedisServiceRegistry("localhost");
         //ServerStub serverStub = new ServerStub(9999, serializer, registry);
         ServerStub serverStub = new ServerStub();
-        serverStub.register("service.UserService", "service.UserServiceImpl");
+        serverStub.register("UserService", "service.UserServiceImpl");
         serverStub.run();
     }
 }

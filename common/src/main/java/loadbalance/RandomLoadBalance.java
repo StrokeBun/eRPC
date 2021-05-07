@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Random;
 
 /**
- * @description:
+ * @description: random load balance
  * @author: Stroke
  * @date: 2021/05/06
  */

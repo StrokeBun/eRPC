@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @description:
+ * @description: discover service based on redis
  * @author: Stroke
  * @date: 2021/04/30
  */

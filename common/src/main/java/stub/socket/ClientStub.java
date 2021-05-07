@@ -5,7 +5,6 @@ import dto.Request;
 import dto.Response;
 import exception.enums.RpcErrorMessageEnum;
 import exception.RpcException;
-import lombok.AllArgsConstructor;
 import registry.ServiceDiscovery;
 import serialize.Serializer;
 
@@ -21,18 +20,19 @@ import java.util.UUID;
  * @author: Stroke
  * @date: 2021/04/21
  */
-@AllArgsConstructor
 public class ClientStub {
     private static final String INTERFACE_NAME = "interfaceName";
-    private Serializer serializer;
-    private ServiceDiscovery discovery;
+    private RpcClientConfiguration configuration;
 
     public ClientStub() {
-        serializer = RpcClientConfiguration.getDefaultSerializer();
-        discovery = RpcClientConfiguration.getDefaultServiceDiscovery();
+        configuration = RpcClientConfiguration.builder().build();
     }
 
-    public Object getInstance(Class clazz) {
+    public ClientStub(RpcClientConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public<T> T getInstance(Class<T> clazz) {
         class ClientHandler implements InvocationHandler {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -44,17 +44,20 @@ public class ClientStub {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-
+                String className = clazz.getSimpleName();
                 // discover the rpc server socket address
-                InetSocketAddress address = discovery.discoverService(clazz.getName());
+                final ServiceDiscovery discovery = configuration.getServiceDiscovery();
+                InetSocketAddress address = discovery.discoverService(className);
                 try (Socket socket = new Socket(address.getAddress(), address.getPort())) {
                     // generate request and send it to rpc server
-                    Request request = new Request();
-                    request.setRequestId(UUID.randomUUID().toString());
-                    request.setClassName(clazz.getName());
-                    request.setMethodName(method.getName());
-                    request.setParametersType(method.getParameterTypes());
-                    request.setParametersValue(args);
+                    Request request = Request.builder()
+                            .requestId(UUID.randomUUID().toString())
+                            .className(className)
+                            .methodName(method.getName())
+                            .parametersType(method.getParameterTypes())
+                            .parametersValue(args)
+                            .build();
+                    final Serializer serializer = configuration.getSerializer();
                     serializer.serialize(request, socket.getOutputStream());
 
                     // get response from rpc server
@@ -66,7 +69,7 @@ public class ClientStub {
             }
         }
         Object object = Proxy.newProxyInstance(clazz.getClassLoader(), new Class[]{clazz}, new ClientHandler());
-        return object;
+        return (T)object;
     }
 
 

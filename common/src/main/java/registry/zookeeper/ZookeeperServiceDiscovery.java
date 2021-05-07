@@ -5,7 +5,6 @@ import org.apache.curator.framework.CuratorFramework;
 import registry.BaseServiceDiscovery;
 import registry.ServiceDiscovery;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 
 /**

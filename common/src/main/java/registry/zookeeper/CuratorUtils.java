@@ -7,7 +7,6 @@ import org.apache.curator.framework.imps.CuratorFrameworkState;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.CreateMode;
 
-import java.net.InetSocketAddress;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -15,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @description:
+ * @description: zookeeper utils
  * @author: Stroke
  * @date: 2021/04/26
  */
@@ -32,7 +31,6 @@ class CuratorUtils {
 
     /**
      * Create persistent nodes. Unlike temporary nodes, persistent nodes are not removed when the client disconnects
-     *
      * @param path node path
      */
     public static void createPersistentNode(CuratorFramework zkClient, String path) {
@@ -72,10 +70,10 @@ class CuratorUtils {
     /**
      * Empty the registry of data
      */
-    public static void clearRegistry(CuratorFramework zkClient, InetSocketAddress inetSocketAddress) {
+    public static void clearRegistry(CuratorFramework zkClient, String path) {
         REGISTERED_PATH_SET.stream().parallel().forEach(p -> {
             try {
-                if (p.endsWith(inetSocketAddress.toString())) {
+                if (p.endsWith(path)) {
                     zkClient.delete().forPath(p);
                 }
             } catch (Exception e) {

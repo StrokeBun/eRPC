@@ -10,4 +10,6 @@ public interface ServiceRegistry {
      * @param address service address
      */
     void registerService(String serviceName, InetSocketAddress address);
+
+    void removeService(String serviceName, InetSocketAddress address);
 }

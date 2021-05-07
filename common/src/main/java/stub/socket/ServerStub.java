@@ -12,8 +12,8 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -25,39 +25,36 @@ import java.util.concurrent.Executors;
 @AllArgsConstructor
 public final class ServerStub {
 
-    private int serverPort;
-    private Serializer serializer;
-    private ServiceRegistry serviceRegistry;
+    private RpcServerConfiguration configuration;
     private Map<String, String> registerTable;
     private ExecutorService threadPool;
 
     public ServerStub() {
-        serverPort = RpcServerConfiguration.getRpcServerPort();
-        serializer = RpcServerConfiguration.getSerializer();
-        serviceRegistry = RpcServerConfiguration.getDefaultServiceRegistry();
+        configuration = RpcServerConfiguration.builder().build();
         init();
     }
 
-    public ServerStub(int serverPort, Serializer serializer, ServiceRegistry serviceRegistry) {
-        this.serverPort = serverPort;
-        this.serializer = serializer;
-        this.serviceRegistry = serviceRegistry;
+    public ServerStub(RpcServerConfiguration configuration) {
+        this.configuration = configuration;
         init();
     }
 
     private void init() {
-        registerTable = new HashMap<>();
+        registerTable = new ConcurrentHashMap<>();
         threadPool = Executors.newFixedThreadPool(10);
     }
 
     public void register(String interfaceName, String implementName) throws UnknownHostException {
         registerTable.put(interfaceName, implementName);
         String ip = InetAddress.getLocalHost().getHostAddress();
+        final int serverPort = configuration.getServerPort();
+        final ServiceRegistry serviceRegistry = configuration.getServiceRegistry();
         InetSocketAddress address = new InetSocketAddress(ip, serverPort);
         serviceRegistry.registerService(interfaceName, address);
     }
 
     public void run() throws IOException {
+        final int serverPort = configuration.getServerPort();
         try (ServerSocket serverSocket = new ServerSocket(serverPort)) {
             while(true){
                 Socket client = serverSocket.accept();
@@ -65,7 +62,18 @@ public final class ServerStub {
             }
         } finally {
             threadPool.shutdown();
-            // todo: remove the registry service
+            removeService();
+        }
+    }
+
+
+    private void removeService() throws UnknownHostException {
+        final int serverPort = configuration.getServerPort();
+        final ServiceRegistry serviceRegistry = configuration.getServiceRegistry();
+        String ip = InetAddress.getLocalHost().getHostAddress();
+        InetSocketAddress address = new InetSocketAddress(ip, serverPort);
+        for (String serviceName : registerTable.keySet()) {
+            serviceRegistry.removeService(serviceName, address);
         }
     }
 
@@ -82,6 +90,7 @@ public final class ServerStub {
         @SneakyThrows
         @Override
         public void run() {
+            Serializer serializer = configuration.getSerializer();
             Request request = serializer.deserialize(socket.getInputStream(), Request.class);
             String className = request.getClassName();
             request.setClassName(registerTable.get(className));

@@ -3,7 +3,7 @@ package registry;
 import java.net.InetSocketAddress;
 
 /**
- * @description:
+ * @description: interface of discovering service
  * @author: Stroke
  * @date: 2021/04/26
  */
