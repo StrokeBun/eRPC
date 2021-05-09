@@ -7,9 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import registry.ServiceRegistry;
 import registry.ServiceRegistryFactory;
-import serialize.JdkSerializer;
-import serialize.Serializer;
-import serialize.SingletonSerializerFactory;
+import serialize.serializer.iostream.JdkSerializer;
+import serialize.serializer.iostream.IOStreamSerializer;
+import serialize.factory.SingletonIOStreamSerializerFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -28,7 +28,7 @@ public class RpcServerConfiguration {
     @Builder.Default
     private int serverPort = DefaultServerConfiguration.RPC_SERVER_PORT;
     @Builder.Default
-    private Serializer serializer = DefaultServerConfiguration.DEFAULT_SERIALIZER;
+    private IOStreamSerializer serializer = DefaultServerConfiguration.DEFAULT_SERIALIZER;
     @Builder.Default
     private ServiceRegistry serviceRegistry = DefaultServerConfiguration.DEFAULT_SERVICE_REGISTRY;
 
@@ -45,7 +45,7 @@ public class RpcServerConfiguration {
         /**
          * serializer of RPC
          */
-        private static Serializer DEFAULT_SERIALIZER;
+        private static IOStreamSerializer DEFAULT_SERIALIZER;
         /**
          * Default service registry of RPC server
          */
@@ -69,7 +69,7 @@ public class RpcServerConfiguration {
                 RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
                 // get the type of serialize, default jdk serialize
                 String serializerType = properties.getProperty(SERIALIZE_KEY);
-                DEFAULT_SERIALIZER = serializerType != null ? SingletonSerializerFactory.getSerializer(serializerType) : new JdkSerializer();
+                DEFAULT_SERIALIZER = serializerType != null ? SingletonIOStreamSerializerFactory.getSerializer(serializerType) : new JdkSerializer();
 
                 String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
                 if (registryServerType == null) {

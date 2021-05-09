@@ -1,14 +1,6 @@
 import entity.User;
-import org.checkerframework.checker.units.qual.C;
-import registry.ServiceDiscovery;
-import registry.ServiceRegistry;
-import registry.redis.RedisServiceDiscovery;
-import registry.redis.RedisServiceRegistry;
-import registry.zookeeper.ZookeeperServiceDiscovery;
-import serialize.JdkSerializer;
-import serialize.Serializer;
 import service.UserService;
-import stub.socket.ClientStub;
+import stub.socket.SocketClientStub;
 
 /**
  * @description:
@@ -20,7 +12,7 @@ public class Client {
         //Serializer serializer = new JdkSerializer();
         //ServiceDiscovery discovery = new RedisServiceDiscovery("localhost");
         //ClientStub stub = new ClientStub(serializer, discovery);
-        ClientStub stub = new ClientStub();
+        SocketClientStub stub = new SocketClientStub();
         UserService service = stub.getInstance(UserService.class);
 
         User user = service.getUser(1, "bzzb");

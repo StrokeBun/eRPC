@@ -6,8 +6,9 @@ import dto.Response;
 import exception.enums.RpcErrorMessageEnum;
 import exception.RpcException;
 import registry.ServiceDiscovery;
-import serialize.Serializer;
+import serialize.serializer.iostream.IOStreamSerializer;
 
+import java.io.IOException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -20,22 +21,22 @@ import java.util.UUID;
  * @author: Stroke
  * @date: 2021/04/21
  */
-public class ClientStub {
+public class SocketClientStub {
     private static final String INTERFACE_NAME = "interfaceName";
     private RpcClientConfiguration configuration;
 
-    public ClientStub() {
+    public SocketClientStub() {
         configuration = RpcClientConfiguration.builder().build();
     }
 
-    public ClientStub(RpcClientConfiguration configuration) {
+    public SocketClientStub(RpcClientConfiguration configuration) {
         this.configuration = configuration;
     }
 
     public<T> T getInstance(Class<T> clazz) {
         class ClientHandler implements InvocationHandler {
             @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            public Object invoke(Object proxy, Method method, Object[] args) throws IOException {
                 // if the method is from Object, invoke directly
                 try {
                     if (Object.class.equals(method.getDeclaringClass())) {
@@ -57,7 +58,7 @@ public class ClientStub {
                             .parametersType(method.getParameterTypes())
                             .parametersValue(args)
                             .build();
-                    final Serializer serializer = configuration.getSerializer();
+                    final IOStreamSerializer serializer = configuration.getSerializer();
                     serializer.serialize(request, socket.getOutputStream());
 
                     // get response from rpc server

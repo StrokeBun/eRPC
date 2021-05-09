@@ -6,7 +6,7 @@ import dto.Response;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import registry.ServiceRegistry;
-import serialize.Serializer;
+import serialize.serializer.iostream.IOStreamSerializer;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -23,18 +23,18 @@ import java.util.concurrent.Executors;
  * @date: 2021/04/21
  */
 @AllArgsConstructor
-public final class ServerStub {
+public final class SocketServerStub {
 
     private RpcServerConfiguration configuration;
     private Map<String, String> registerTable;
     private ExecutorService threadPool;
 
-    public ServerStub() {
+    public SocketServerStub() {
         configuration = RpcServerConfiguration.builder().build();
         init();
     }
 
-    public ServerStub(RpcServerConfiguration configuration) {
+    public SocketServerStub(RpcServerConfiguration configuration) {
         this.configuration = configuration;
         init();
     }
@@ -90,7 +90,7 @@ public final class ServerStub {
         @SneakyThrows
         @Override
         public void run() {
-            Serializer serializer = configuration.getSerializer();
+            IOStreamSerializer serializer = configuration.getSerializer();
             Request request = serializer.deserialize(socket.getInputStream(), Request.class);
             String className = request.getClassName();
             request.setClassName(registerTable.get(className));
