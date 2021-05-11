@@ -51,13 +51,12 @@ public class SocketClientStub {
                 InetSocketAddress address = discovery.discoverService(className);
                 try (Socket socket = new Socket(address.getAddress(), address.getPort())) {
                     // generate request and send it to rpc server
-                    Request request = Request.builder()
-                            .requestId(UUID.randomUUID().toString())
-                            .className(className)
-                            .methodName(method.getName())
-                            .parametersType(method.getParameterTypes())
-                            .parametersValue(args)
-                            .build();
+                    Request request = new Request();
+                    request.setRequestId(UUID.randomUUID().toString());
+                    request.setClassName(className);
+                    request.setMethodName(method.getName());
+                    request.setParametersType(method.getParameterTypes());
+                    request.setParametersValue(args);
                     final IOStreamSerializer serializer = configuration.getSerializer();
                     serializer.serialize(request, socket.getOutputStream());
 

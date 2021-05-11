@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @description:
+ * @description: Serializer based on kryo
  * @author: Stroke
  * @date: 2021/04/22
  */
@@ -53,6 +53,13 @@ public class KryoSerializer implements IOStreamSerializer, ByteArraySerializer {
         }
     }
 
+    /**
+     *
+     * @param is
+     * @param clazz
+     * @param <T> the class type, need a default constructor
+     * @return
+     */
     @Override
     public <T> T deserialize(InputStream is, Class<T> clazz) {
         Kryo kryo = kryoThreadLocal.get();

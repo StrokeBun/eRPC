@@ -2,6 +2,7 @@ package serialize.factory;
 
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
+import serialize.serializer.bytearray.ProtostuffSerializer;
 import serialize.serializer.iostream.HessianSerializer;
 import serialize.serializer.both.KryoSerializer;
 import serialize.serializer.iostream.IOStreamSerializer;
