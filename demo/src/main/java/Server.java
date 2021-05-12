@@ -1,4 +1,5 @@
-import stub.socket.SocketServerStub;
+import stub.server.ServerStub;
+import stub.server.SocketServerStub;
 
 import java.io.IOException;
 
@@ -12,7 +13,7 @@ public class Server {
         //Serializer serializer = new JdkSerializer();
         //ServiceRegistry registry = new RedisServiceRegistry("localhost");
         //ServerStub serverStub = new ServerStub(9999, serializer, registry);
-        SocketServerStub serverStub = new SocketServerStub();
+        ServerStub serverStub = new SocketServerStub();
         serverStub.register("UserService", "service.UserServiceImpl");
         serverStub.run();
     }

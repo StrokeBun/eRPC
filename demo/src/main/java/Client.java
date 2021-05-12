@@ -1,6 +1,7 @@
 import entity.User;
 import service.UserService;
-import stub.socket.SocketClientStub;
+import stub.client.ClientStub;
+import stub.client.SocketClientStub;
 
 /**
  * @description:
@@ -12,7 +13,7 @@ public class Client {
         //Serializer serializer = new JdkSerializer();
         //ServiceDiscovery discovery = new RedisServiceDiscovery("localhost");
         //ClientStub stub = new ClientStub(serializer, discovery);
-        SocketClientStub stub = new SocketClientStub();
+        ClientStub stub = new SocketClientStub();
         UserService service = stub.getInstance(UserService.class);
 
         User user = service.getUser(1, "bzzb");

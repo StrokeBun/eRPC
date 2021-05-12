@@ -7,9 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import registry.ServiceDiscovery;
 import registry.ServiceDiscoveryFactory;
-import serialize.factory.SingletonIOStreamSerializerFactory;
-import serialize.serializer.iostream.IOStreamSerializer;
-import serialize.serializer.iostream.JdkSerializer;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -26,8 +23,6 @@ import java.util.Properties;
 public class RpcClientConfiguration {
 
     @Builder.Default
-    private IOStreamSerializer serializer = DefaultClientConfiguration.DEFAULT_SERIALIZER;
-    @Builder.Default
     private ServiceDiscovery serviceDiscovery = DefaultClientConfiguration.DEFAULT_SERVICE_DISCOVERY;
 
     private static class DefaultClientConfiguration {
@@ -37,11 +32,6 @@ public class RpcClientConfiguration {
         private static final String CLIENT_CONFIGURATION_FILENAME = "rpc-client-config.properties";
 
         /**
-         * Default serializer of RPC client
-         */
-        private static IOStreamSerializer DEFAULT_SERIALIZER;
-
-        /**
          * Default service discovery of RPC client
          */
         private static ServiceDiscovery DEFAULT_SERVICE_DISCOVERY;
@@ -49,7 +39,6 @@ public class RpcClientConfiguration {
         /**
          * Keys of configuration file
          */
-        private static final String SERIALIZE_KEY = "serialize";
         private static final String REGISTRY_SERVER_TYPE_KEY = "registry-server-type";
         private static final String REGISTRY_SERVER_ADDRESS_KEY = "registry-server-address";
 
@@ -59,10 +48,7 @@ public class RpcClientConfiguration {
         static {
             try {
                 Properties properties = PropertiesUtils.loadProperties(CLIENT_CONFIGURATION_FILENAME);
-                // get the type of serialize, default jdk serialize
-                String serializerType = properties.getProperty(SERIALIZE_KEY);
-                DEFAULT_SERIALIZER = serializerType != null ? SingletonIOStreamSerializerFactory.getSerializer(serializerType) : new JdkSerializer();
-
+                // get the information of registry server
                 String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
                 if (registryServerType == null) {
                     throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
