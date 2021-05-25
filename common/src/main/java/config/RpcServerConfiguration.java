@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import registry.ServiceRegistry;
-import registry.ServiceRegistryFactory;
+import registry.factory.ServiceRegistryFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;

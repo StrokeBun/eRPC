@@ -1,13 +1,8 @@
-package stub.server;
+package stub;
 
 import config.RpcServerConfiguration;
-import dto.Request;
-import dto.Response;
 import registry.ServiceRegistry;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
@@ -21,7 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class BaseServerStub implements ServerStub {
 
-    private RpcServerConfiguration configuration ;
+    protected RpcServerConfiguration configuration ;
     private Map<String, String> registerTable;
 
     public BaseServerStub() {
@@ -49,7 +44,7 @@ public abstract class BaseServerStub implements ServerStub {
     }
 
     @Override
-    public abstract void run() throws IOException;
+    public abstract void run() throws Exception;
 
     protected void removeService() throws UnknownHostException {
         final int serverPort = configuration.getServerPort();
@@ -61,49 +56,8 @@ public abstract class BaseServerStub implements ServerStub {
         }
     }
 
-    protected RpcServerConfiguration getConfiguration() {
-        return configuration;
-    }
-
     protected Map<String, String> getRegisterTable() {
         return registerTable;
-    }
-
-    /**
-     * Generate the RPC response.
-     * @param request RPC request from client
-     * @return RPC response
-     */
-    protected Response getResponse(Request request) {
-        Object result = null;
-        Response response = new Response();
-        response.setResponseId(request.getRequestId());
-        try {
-            result = invoke(request);
-        } catch (ClassNotFoundException e) {
-            response.setError("class not found");
-        } catch (NoSuchMethodException e) {
-            response.setError("method not found");
-        } catch (Exception e){
-            response.setError("function inner error");
-        } finally {
-            response.setResult(result);
-        }
-        return response;
-    }
-
-    /**
-     * Use reflection to invoke the method.
-     * @param request RPC request from client
-     * @return result object
-     */
-    protected Object invoke(Request request) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InstantiationException, InvocationTargetException {
-        String className = request.getClassName();
-        String methodName = request.getMethodName();
-        Class clazz = Class.forName(className);
-        Object object = clazz.newInstance();
-        Method method = clazz.getMethod(methodName, request.getParametersType());
-        return method.invoke(object, request.getParametersValue());
     }
 
 }

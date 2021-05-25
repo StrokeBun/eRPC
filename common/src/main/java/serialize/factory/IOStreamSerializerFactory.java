@@ -2,6 +2,7 @@ package serialize.factory;
 
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
+import serialize.serializer.bytearray.ByteArraySerializer;
 import serialize.serializer.bytearray.ProtostuffSerializer;
 import serialize.serializer.iostream.HessianSerializer;
 import serialize.serializer.both.KryoSerializer;
@@ -16,17 +17,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/04/22
  */
-public final class SingletonIOStreamSerializerFactory {
-
-    private static Map<String, IOStreamSerializer> SERIALIZER_MAP = new ConcurrentHashMap<String, IOStreamSerializer>() {
+public final class IOStreamSerializerFactory {
+    private static Map<SerializationTypeEnum, IOStreamSerializer> SERIALIZER_MAP = new ConcurrentHashMap<SerializationTypeEnum, IOStreamSerializer>() {
         {
-            put("jdk", new JdkSerializer());
-            put("hessian", new HessianSerializer());
-            put("kryo", new KryoSerializer());
+            put(SerializationTypeEnum.KRYO, new KryoSerializer());
+            put(SerializationTypeEnum.HESSIAN, new HessianSerializer());
+            put(SerializationTypeEnum.JDK, new JdkSerializer());
         }
     };
 
-    public static IOStreamSerializer getSerializer(String type) {
+    public static IOStreamSerializer getSerializer(SerializationTypeEnum type) {
         final IOStreamSerializer serializer = SERIALIZER_MAP.get(type);
         if (serializer == null) {
             throw new ConfigurationException(ConfigurationErrorMessageEnum.UNSUPPORTED_SERIALIZE_TYPE);
@@ -34,7 +34,7 @@ public final class SingletonIOStreamSerializerFactory {
         return serializer;
     }
 
-    private SingletonIOStreamSerializerFactory() {
+    private IOStreamSerializerFactory() {
 
     }
 }

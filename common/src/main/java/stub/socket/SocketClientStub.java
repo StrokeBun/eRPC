@@ -1,10 +1,11 @@
-package stub.client;
+package stub.socket;
 
 import config.RpcClientConfiguration;
+import constants.StubConstants;
 import dto.Request;
 import dto.Response;
-import serialize.factory.SingletonIOStreamSerializerFactory;
 import serialize.serializer.iostream.IOStreamSerializer;
+import stub.BaseClientStub;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -18,8 +19,7 @@ import java.net.Socket;
  */
 public class SocketClientStub extends BaseClientStub {
 
-    private static IOStreamSerializer DEFAULT_SERIALIZER = SingletonIOStreamSerializerFactory.getSerializer("jdk");
-    private IOStreamSerializer serializer = DEFAULT_SERIALIZER;
+    private IOStreamSerializer serializer = StubConstants.SOCKET_STUB_DEFAULT_SERIALIZER;
 
     public SocketClientStub() {
         super();

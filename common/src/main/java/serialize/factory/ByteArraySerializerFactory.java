@@ -14,16 +14,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/04/22
  */
-public final class SingletonByteArraySerializerFactory {
+public final class ByteArraySerializerFactory {
 
-    private static Map<String, ByteArraySerializer> SERIALIZER_MAP = new ConcurrentHashMap<String, ByteArraySerializer>() {
+    private static Map<SerializationTypeEnum, ByteArraySerializer> SERIALIZER_MAP = new ConcurrentHashMap<SerializationTypeEnum, ByteArraySerializer>() {
         {
-            put("kryo", new KryoSerializer());
-            put("protostuff", new ProtostuffSerializer());
+            put(SerializationTypeEnum.KRYO, new KryoSerializer());
+            put(SerializationTypeEnum.PROTOSTUFF, new ProtostuffSerializer());
         }
     };
 
-    public static ByteArraySerializer getSerializer(String type) {
+    public static ByteArraySerializer getSerializer(SerializationTypeEnum type) {
         final ByteArraySerializer serializer = SERIALIZER_MAP.get(type);
         if (serializer == null) {
             throw new ConfigurationException(ConfigurationErrorMessageEnum.UNSUPPORTED_SERIALIZE_TYPE);
@@ -31,7 +31,7 @@ public final class SingletonByteArraySerializerFactory {
         return serializer;
     }
 
-    private SingletonByteArraySerializerFactory() {
+    private ByteArraySerializerFactory() {
 
     }
 }

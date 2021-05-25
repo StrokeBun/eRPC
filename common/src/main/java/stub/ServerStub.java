@@ -1,4 +1,4 @@
-package stub.server;
+package stub;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
@@ -10,5 +10,5 @@ import java.net.UnknownHostException;
  */
 public interface ServerStub {
     void register(String interfaceName, String implementName) throws UnknownHostException;
-    void run() throws IOException;
+    void run() throws Exception;
 }

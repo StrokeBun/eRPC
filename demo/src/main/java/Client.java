@@ -1,7 +1,7 @@
 import entity.User;
 import service.UserService;
-import stub.client.ClientStub;
-import stub.client.SocketClientStub;
+import stub.ClientStub;
+import stub.socket.SocketClientStub;
 
 /**
  * @description:

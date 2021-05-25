@@ -1,4 +1,4 @@
-package stub.client;
+package stub;
 
 import config.RpcClientConfiguration;
 import dto.Request;

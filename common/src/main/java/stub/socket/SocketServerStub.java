@@ -1,11 +1,13 @@
-package stub.server;
+package stub.socket;
 
 import config.RpcServerConfiguration;
+import constants.StubConstants;
 import dto.Request;
 import dto.Response;
 import lombok.SneakyThrows;
-import serialize.factory.SingletonIOStreamSerializerFactory;
 import serialize.serializer.iostream.IOStreamSerializer;
+import stub.BaseServerStub;
+import stub.ServerStubUtils;
 
 import java.io.IOException;
 import java.net.*;
@@ -20,8 +22,7 @@ import java.util.concurrent.Executors;
  */
 public final class SocketServerStub extends BaseServerStub {
 
-    private static IOStreamSerializer DEFAULT_SERIALIZER = SingletonIOStreamSerializerFactory.getSerializer("jdk");
-    private IOStreamSerializer serializer = DEFAULT_SERIALIZER;
+    private IOStreamSerializer serializer = StubConstants.SOCKET_STUB_DEFAULT_SERIALIZER;
     private ExecutorService threadPool;
 
     public SocketServerStub() {
@@ -52,7 +53,6 @@ public final class SocketServerStub extends BaseServerStub {
 
     @Override
     public void run() throws IOException {
-        final RpcServerConfiguration configuration = getConfiguration();
         final int serverPort = configuration.getServerPort();
         try (ServerSocket serverSocket = new ServerSocket(serverPort)) {
             while(true){
@@ -78,7 +78,7 @@ public final class SocketServerStub extends BaseServerStub {
             Request request = serializer.deserialize(socket.getInputStream(), Request.class);
             String className = request.getClassName();
             request.setClassName(registerTable.get(className));
-            Response response = getResponse(request);
+            Response response = ServerStubUtils.getResponse(request);
             serializer.serialize(response, socket.getOutputStream());
             socket.close();
         }

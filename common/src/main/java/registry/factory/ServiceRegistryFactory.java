@@ -1,5 +1,6 @@
-package registry;
+package registry.factory;
 
+import registry.ServiceRegistry;
 import registry.redis.RedisServiceRegistry;
 import registry.zookeeper.ZookeeperServiceRegistry;
 

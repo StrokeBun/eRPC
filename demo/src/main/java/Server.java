@@ -1,7 +1,5 @@
-import stub.server.ServerStub;
-import stub.server.SocketServerStub;
-
-import java.io.IOException;
+import stub.ServerStub;
+import stub.socket.SocketServerStub;
 
 /**
  * @description:
@@ -9,7 +7,7 @@ import java.io.IOException;
  * @date: 2021/04/21
  */
 public class Server {
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         //Serializer serializer = new JdkSerializer();
         //ServiceRegistry registry = new RedisServiceRegistry("localhost");
         //ServerStub serverStub = new ServerStub(9999, serializer, registry);

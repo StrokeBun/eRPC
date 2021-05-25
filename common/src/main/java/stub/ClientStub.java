@@ -1,4 +1,4 @@
-package stub.client;
+package stub;
 
 /**
  * @description: interface of client stub
