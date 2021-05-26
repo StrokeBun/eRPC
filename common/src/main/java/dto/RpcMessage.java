@@ -1,6 +1,8 @@
 package dto;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @description:
@@ -8,10 +10,14 @@ import lombok.Getter;
  * @date: 2021/05/25
  */
 @Getter
+@Setter
+@Builder
 public class RpcMessage {
 
     private byte messageType;
     private byte serializationType;
+    private byte compress;
     // request data
     private Object data;
+
 }

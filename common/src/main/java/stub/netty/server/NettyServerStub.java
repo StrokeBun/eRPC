@@ -10,6 +10,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import stub.BaseServerStub;
+import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
 
 import java.net.InetSocketAddress;
@@ -43,6 +44,7 @@ public class NettyServerStub extends BaseServerStub {
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline()
                                     .addLast(new RpcMessageEncoder())
+                                    .addLast(new RpcMessageDecoder())
                                     .addLast(handler);
                         }
                     });
