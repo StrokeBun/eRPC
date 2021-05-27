@@ -60,7 +60,6 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
                     frame.release();
                 }
             }
-
         }
         return decoded;
     }

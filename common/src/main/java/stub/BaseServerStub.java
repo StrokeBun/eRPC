@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public abstract class BaseServerStub implements ServerStub {
 
     protected RpcServerConfiguration configuration ;
-    private Map<String, String> registerTable;
+    protected Map<String, String> registerTable;
 
     public BaseServerStub() {
         configuration = RpcServerConfiguration.builder().build();

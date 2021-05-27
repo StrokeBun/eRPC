@@ -13,6 +13,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetSocketAddress;
 import java.util.UUID;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @description: base implement of client stub
@@ -35,7 +36,7 @@ public abstract class BaseClientStub implements ClientStub {
     public<T> T getInstance(Class<T> clazz) {
         class ClientHandler implements InvocationHandler {
             @Override
-            public Object invoke(Object proxy, Method method, Object[] args) throws IOException {
+            public Object invoke(Object proxy, Method method, Object[] args) throws IOException, ExecutionException, InterruptedException {
                 // if the method is from Object, invoke directly
                 try {
                     if (Object.class.equals(method.getDeclaringClass())) {
@@ -67,7 +68,7 @@ public abstract class BaseClientStub implements ClientStub {
         return clazz.cast(object);
     }
 
-    public abstract Response sendRequest(Request request, InetSocketAddress address, RpcClientConfiguration configuration) throws IOException;
+    public abstract Response sendRequest(Request request, InetSocketAddress address, RpcClientConfiguration configuration) throws IOException, ExecutionException, InterruptedException;
 
     private void check(Request request, Response response) {
         if (response == null) {
