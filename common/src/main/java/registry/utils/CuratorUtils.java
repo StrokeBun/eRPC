@@ -1,4 +1,4 @@
-package registry.zookeeper;
+package registry.utils;
 
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * @author: Stroke
  * @date: 2021/04/26
  */
-class CuratorUtils {
+public final class CuratorUtils {
 
     private static final int BASE_SLEEP_TIME = 1000;
     private static final int MAX_RETRIES = 3;

@@ -1,4 +1,4 @@
-package registry.redis;
+package registry.utils;
 
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.api.StatefulRedisConnection;
@@ -13,7 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/04/30
  */
-class RedisUtils {
+public final class RedisUtils {
 
     private static final Map<String, RedisClient> REDIS_CLIENT_MAP = new ConcurrentHashMap<>();
 

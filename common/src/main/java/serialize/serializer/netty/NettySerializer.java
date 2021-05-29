@@ -1,13 +1,13 @@
-package serialize.serializer.bytearray;
+package serialize.serializer.netty;
 
 import exception.SerializeException;
 
 /**
- * @description: interface of serializer based on byte array
+ * @description: interface of serializer used in socket based on netty
  * @author: Stroke
  * @date: 2021/05/09
  */
-public interface ByteArraySerializer {
+public interface NettySerializer {
 
     byte[] serialize(Object obj) throws SerializeException;
 

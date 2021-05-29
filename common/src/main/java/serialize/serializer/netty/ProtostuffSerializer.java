@@ -1,23 +1,16 @@
-package serialize.serializer.bytearray;
+package serialize.serializer.netty;
 
-import exception.SerializeException;
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;
 import io.protostuff.Schema;
 import io.protostuff.runtime.RuntimeSchema;
-import org.objenesis.Objenesis;
-import org.objenesis.ObjenesisStd;
-import serialize.serializer.iostream.IOStreamSerializer;
-
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * @description: Serializer based on protostuff.
  * @author: Stroke
  * @date: 2021/05/09
  */
-public class ProtostuffSerializer implements ByteArraySerializer {
+public class ProtostuffSerializer implements NettySerializer {
 
     private static final LinkedBuffer BUFFER = LinkedBuffer.allocate(LinkedBuffer.DEFAULT_BUFFER_SIZE);
 

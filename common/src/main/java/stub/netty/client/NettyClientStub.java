@@ -2,6 +2,7 @@ package stub.netty.client;
 
 import config.RpcClientConfiguration;
 import constants.RpcConstants;
+import constants.StubConstants;
 import dto.Request;
 import dto.Response;
 import dto.RpcMessage;
@@ -27,8 +28,7 @@ import java.util.concurrent.ExecutionException;
 public class NettyClientStub extends BaseClientStub {
 
     private Bootstrap bootstrap;
-    private EventLoopGroup eventLoopGroup;
-    private SerializationTypeEnum serializationType = SerializationTypeEnum.KRYO;
+    private SerializationTypeEnum serializationType = StubConstants.NETTY_STUB_DEFAULT_SERIALIZATION_TYPE;
 
     public NettyClientStub() {
         init();
@@ -40,7 +40,7 @@ public class NettyClientStub extends BaseClientStub {
     }
 
     private void init() {
-        eventLoopGroup = new NioEventLoopGroup();
+        EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
         bootstrap = new Bootstrap();
         bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
@@ -50,7 +50,7 @@ public class NettyClientStub extends BaseClientStub {
                         socketChannel.pipeline()
                                 .addLast(new RpcMessageEncoder())
                                 .addLast(new RpcMessageDecoder())
-                                .addLast(new ClientHandler());
+                                .addLast(new NettyRpcClientHandler());
                     }
                 });
     }
@@ -65,19 +65,18 @@ public class NettyClientStub extends BaseClientStub {
                 throw new IllegalStateException();
             }
         });
-        Channel channel =  completableFuture.get();
+        Channel channel = completableFuture.get();
 
         CompletableFuture<Response> resultFuture = new CompletableFuture<>();
         if (channel.isActive()) {
-            // put unprocessed request
-            UnprocessedRequestUtils.put(request.getRequestId(), resultFuture);
+            // send request async
+            UnprocessedRequestContext.put(request.getRequestId(), resultFuture);
             RpcMessage rpcMessage = RpcMessage.builder()
                     .data(request)
                     .serializationType(serializationType.getCode())
                     .compress((byte) 1)
                     .messageType(RpcConstants.REQUEST_TYPE)
                     .build();
-
             channel.writeAndFlush(rpcMessage).addListener((ChannelFutureListener) future -> {
                 if (!future.isSuccess()) {
                     future.channel().close();

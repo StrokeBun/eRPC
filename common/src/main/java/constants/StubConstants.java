@@ -1,10 +1,10 @@
 package constants;
 
-import serialize.factory.ByteArraySerializerFactory;
-import serialize.factory.IOStreamSerializerFactory;
+import serialize.factory.NettySerializerFactory;
+import serialize.factory.SocketSerializerFactory;
 import serialize.factory.SerializationTypeEnum;
-import serialize.serializer.bytearray.ByteArraySerializer;
-import serialize.serializer.iostream.IOStreamSerializer;
+import serialize.serializer.netty.NettySerializer;
+import serialize.serializer.socket.SocketSerializer;
 
 /**
  * @description:
@@ -13,8 +13,8 @@ import serialize.serializer.iostream.IOStreamSerializer;
  */
 public final class StubConstants {
 
-    public static final IOStreamSerializer SOCKET_STUB_DEFAULT_SERIALIZER =
-            IOStreamSerializerFactory.getSerializer(SerializationTypeEnum.JDK);
-    public static final ByteArraySerializer NETTY_STUB_DEFAULT_SERIALIZER =
-            ByteArraySerializerFactory.getSerializer(SerializationTypeEnum.KRYO);
+    public static final SocketSerializer SOCKET_STUB_DEFAULT_SERIALIZER =
+            SocketSerializerFactory.getInstance(SerializationTypeEnum.JDK);
+    public static final SerializationTypeEnum NETTY_STUB_DEFAULT_SERIALIZATION_TYPE =
+            SerializationTypeEnum.PROTOSTUFF;
 }

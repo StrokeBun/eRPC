@@ -1,8 +1,9 @@
-package registry.redis;
+package registry.impl.redis;
 
 import io.lettuce.core.RedisClient;
 import loadbalance.LoadBalance;
 import registry.BaseServiceDiscovery;
+import registry.utils.RedisUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,8 +1,8 @@
 package registry.factory;
 
 import registry.ServiceRegistry;
-import registry.redis.RedisServiceRegistry;
-import registry.zookeeper.ZookeeperServiceRegistry;
+import registry.impl.redis.RedisServiceRegistry;
+import registry.impl.zookeeper.ZookeeperServiceRegistry;
 
 /**
  * @description: Simple factory of service registry.

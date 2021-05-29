@@ -1,8 +1,8 @@
 package registry.factory;
 
 import registry.ServiceDiscovery;
-import registry.redis.RedisServiceDiscovery;
-import registry.zookeeper.ZookeeperServiceDiscovery;
+import registry.impl.redis.RedisServiceDiscovery;
+import registry.impl.zookeeper.ZookeeperServiceDiscovery;
 
 /**
  * @description: Simple factory of service discovery.

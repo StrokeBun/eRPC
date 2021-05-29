@@ -1,4 +1,4 @@
-package serialize.serializer.iostream;
+package serialize.serializer.socket;
 
 import exception.SerializeException;
 
@@ -6,11 +6,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @description: interface of serializer based on io stream
+ * @description: interface of serializer used in stub based on socket
  * @author: Stroke
  * @date: 2021/05/09
  */
-public interface IOStreamSerializer {
+public interface SocketSerializer {
     /**
      * serialize object and write it using OutputStream
      * @param obj the object to serialize

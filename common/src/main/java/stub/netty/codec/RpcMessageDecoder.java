@@ -7,9 +7,9 @@ import dto.RpcMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import serialize.factory.ByteArraySerializerFactory;
+import serialize.factory.NettySerializerFactory;
 import serialize.factory.SerializationTypeEnum;
-import serialize.serializer.bytearray.ByteArraySerializer;
+import serialize.serializer.netty.NettySerializer;
 
 import java.util.Arrays;
 
@@ -83,7 +83,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
             // deserialize the object
             SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
-            ByteArraySerializer serializer = ByteArraySerializerFactory.getSerializer(type);
+            NettySerializer serializer = NettySerializerFactory.getInstance(type);
             Object data = null;
             if (messageType == RpcConstants.REQUEST_TYPE) {
                 data = serializer.deserialize(bytes, Request.class);

@@ -1,4 +1,4 @@
-package serialize.serializer.iostream;
+package serialize.serializer.socket;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
@@ -11,7 +11,7 @@ import java.io.*;
  * @author: Stroke
  * @date: 2021/04/22
  */
-public class HessianSerializer implements IOStreamSerializer {
+public class HessianSerializer implements SocketSerializer {
 
     @Override
     public void serialize(Object obj, OutputStream os) throws SerializeException {
@@ -34,6 +34,4 @@ public class HessianSerializer implements IOStreamSerializer {
         }
     }
 
-    public static void main(String[] args) {
-    }
 }

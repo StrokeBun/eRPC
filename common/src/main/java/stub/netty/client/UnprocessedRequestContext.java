@@ -12,16 +12,16 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/05/27
  */
-public final class UnprocessedRequestUtils {
+public final class UnprocessedRequestContext {
 
-    private static final Map<String, CompletableFuture<Response>> UNPROCESSED_REQUEST_FEATURE = new ConcurrentHashMap<>();
+    private static final Map<String, CompletableFuture<Response>> UNPROCESSED_REQUEST_FEATURES = new ConcurrentHashMap<>();
 
     public static void put(String requestId, CompletableFuture<Response> future) {
-        UNPROCESSED_REQUEST_FEATURE.put(requestId, future);
+        UNPROCESSED_REQUEST_FEATURES.put(requestId, future);
     }
 
     public static void complete(Response response) {
-        CompletableFuture<Response> future = UNPROCESSED_REQUEST_FEATURE.remove(response.getResponseId());
+        CompletableFuture<Response> future = UNPROCESSED_REQUEST_FEATURES.remove(response.getResponseId());
         if (future != null) {
             future.complete(response);
         } else {

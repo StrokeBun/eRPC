@@ -5,13 +5,11 @@ import constants.StubConstants;
 import dto.Request;
 import dto.Response;
 import lombok.SneakyThrows;
-import serialize.serializer.iostream.IOStreamSerializer;
+import serialize.serializer.socket.SocketSerializer;
 import stub.BaseServerStub;
-import stub.ServerStubUtils;
 
 import java.io.IOException;
 import java.net.*;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -22,7 +20,7 @@ import java.util.concurrent.Executors;
  */
 public final class SocketServerStub extends BaseServerStub {
 
-    private IOStreamSerializer serializer = StubConstants.SOCKET_STUB_DEFAULT_SERIALIZER;
+    private SocketSerializer serializer = StubConstants.SOCKET_STUB_DEFAULT_SERIALIZER;
     private ExecutorService threadPool;
 
     public SocketServerStub() {
@@ -35,13 +33,13 @@ public final class SocketServerStub extends BaseServerStub {
         init();
     }
 
-    public SocketServerStub(IOStreamSerializer serializer) {
+    public SocketServerStub(SocketSerializer serializer) {
         super();
         this.serializer = serializer;
         init();
     }
 
-    public SocketServerStub(RpcServerConfiguration configuration, IOStreamSerializer serializer) {
+    public SocketServerStub(RpcServerConfiguration configuration, SocketSerializer serializer) {
         super(configuration);
         this.serializer = serializer;
         init();
@@ -74,11 +72,10 @@ public final class SocketServerStub extends BaseServerStub {
         @SneakyThrows
         @Override
         public void run() {
-            final Map<String, String> registerTable = getRegisterTable();
             Request request = serializer.deserialize(socket.getInputStream(), Request.class);
             String className = request.getClassName();
             request.setClassName(registerTable.get(className));
-            Response response = ServerStubUtils.getResponse(request);
+            Response response = getResponse(request);
             serializer.serialize(response, socket.getOutputStream());
             socket.close();
         }

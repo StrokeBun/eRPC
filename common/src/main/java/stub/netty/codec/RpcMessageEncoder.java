@@ -1,14 +1,13 @@
 package stub.netty.codec;
 
-import com.sun.xml.internal.ws.developer.Serialization;
 import dto.RpcMessage;
 import constants.RpcConstants;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import serialize.factory.ByteArraySerializerFactory;
+import serialize.factory.NettySerializerFactory;
 import serialize.factory.SerializationTypeEnum;
-import serialize.serializer.bytearray.ByteArraySerializer;
+import serialize.serializer.netty.NettySerializer;
 
 /**
  * @description:
@@ -48,7 +47,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
 
             // serialize
             SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
-            ByteArraySerializer serializer = ByteArraySerializerFactory.getSerializer(type);
+            NettySerializer serializer = NettySerializerFactory.getInstance(type);
             byte[] bodyBytes = serializer.serialize(rpcMessage.getData());
 
             // write data and full length

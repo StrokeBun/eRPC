@@ -45,12 +45,13 @@ public abstract class BaseClientStub implements ClientStub {
                 } catch (Throwable e) {
                     e.printStackTrace();
                 }
-                String className = clazz.getSimpleName();
+
                 // discover the rpc server socket address
+                String className = clazz.getSimpleName();
                 final ServiceDiscovery discovery = configuration.getServiceDiscovery();
                 InetSocketAddress address = discovery.discoverService(className);
 
-                // generate request and send it to rpc server
+                // generate request
                 Request request = new Request();
                 request.setRequestId(UUID.randomUUID().toString());
                 request.setClassName(className);
@@ -59,6 +60,7 @@ public abstract class BaseClientStub implements ClientStub {
                 request.setParametersValue(args);
 
                 Response response = sendRequest(request, address, configuration);
+
                 // check the response
                 check(request, response);
                 return response.getResult();

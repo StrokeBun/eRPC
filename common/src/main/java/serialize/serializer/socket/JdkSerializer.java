@@ -1,8 +1,7 @@
-package serialize.serializer.iostream;
+package serialize.serializer.socket;
 
 
 import exception.SerializeException;
-import serialize.serializer.iostream.IOStreamSerializer;
 
 import java.io.*;
 
@@ -11,7 +10,7 @@ import java.io.*;
  * @author: Stroke
  * @date: 2021/04/22
  */
-public class JdkSerializer implements IOStreamSerializer {
+public class JdkSerializer implements SocketSerializer {
     @Override
     public void serialize(Object obj, OutputStream os) throws SerializeException {
         try {

@@ -1,7 +1,8 @@
-package registry.zookeeper;
+package registry.impl.zookeeper;
 
 import org.apache.curator.framework.CuratorFramework;
 import registry.BaseServiceRegistry;
+import registry.utils.CuratorUtils;
 
 import java.net.InetSocketAddress;
 

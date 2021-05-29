@@ -6,8 +6,8 @@ import com.esotericsoftware.kryo.io.Output;
 import dto.Request;
 import dto.Response;
 import exception.SerializeException;
-import serialize.serializer.bytearray.ByteArraySerializer;
-import serialize.serializer.iostream.IOStreamSerializer;
+import serialize.serializer.netty.NettySerializer;
+import serialize.serializer.socket.SocketSerializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -19,7 +19,7 @@ import java.io.OutputStream;
  * @author: Stroke
  * @date: 2021/04/22
  */
-public class KryoSerializer implements IOStreamSerializer, ByteArraySerializer {
+public class KryoSerializer implements SocketSerializer, NettySerializer {
 
     /**
      * Because Kryo is not thread safe. So, use ThreadLocal to store Kryo objects

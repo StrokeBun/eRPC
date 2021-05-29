@@ -1,11 +1,15 @@
 package stub;
 
 import config.RpcServerConfiguration;
+import dto.Request;
+import dto.Response;
 import registry.ServiceRegistry;
+import util.InvokeUtils;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -34,6 +38,9 @@ public abstract class BaseServerStub implements ServerStub {
     }
 
     @Override
+    public abstract void run() throws Exception;
+
+    @Override
     public void register(String interfaceName, String implementName) throws UnknownHostException {
         registerTable.put(interfaceName, implementName);
         String ip = InetAddress.getLocalHost().getHostAddress();
@@ -42,9 +49,6 @@ public abstract class BaseServerStub implements ServerStub {
         InetSocketAddress address = new InetSocketAddress(ip, serverPort);
         serviceRegistry.registerService(interfaceName, address);
     }
-
-    @Override
-    public abstract void run() throws Exception;
 
     protected void removeService() throws UnknownHostException {
         final int serverPort = configuration.getServerPort();
@@ -56,8 +60,31 @@ public abstract class BaseServerStub implements ServerStub {
         }
     }
 
-    protected Map<String, String> getRegisterTable() {
-        return registerTable;
+    /**
+     * Generate the RPC response.
+     * @param request RPC request from client
+     * @return RPC response
+     */
+    public Response getResponse(Request request) {
+        Object result = null;
+        Response response = new Response();
+        response.setResponseId(request.getRequestId());
+        try {
+            result = InvokeUtils.invoke(request);
+        } catch (ClassNotFoundException e) {
+            response.setError("class not found");
+        } catch (NoSuchMethodException e) {
+            response.setError("method not found");
+        } catch (Exception e){
+            response.setError("function inner error");
+        } finally {
+            response.setResult(result);
+        }
+        return response;
+    }
+
+    public Map<String, String> getRegisterTable() {
+        return new HashMap<>(registerTable);
     }
 
 }

@@ -1,9 +1,5 @@
 import stub.ServerStub;
-import stub.netty.server.NettyServerStub;
-import stub.socket.SocketServerStub;
-
-import java.util.ArrayList;
-import java.util.List;
+import stub.netty.server.NettyRpcServerStub;
 
 /**
  * @description:
@@ -15,7 +11,7 @@ public class Server {
         //Serializer serializer = new JdkSerializer();
         //ServiceRegistry registry = new RedisServiceRegistry("localhost");
         //ServerStub serverStub = new ServerStub(9999, serializer, registry);
-        ServerStub serverStub = new NettyServerStub();
+        ServerStub serverStub = new NettyRpcServerStub();
         serverStub.register("UserService", "service.UserServiceImpl");
         serverStub.run();
     }

@@ -1,7 +1,8 @@
-package registry.redis;
+package registry.impl.redis;
 
 import io.lettuce.core.RedisClient;
 import registry.BaseServiceRegistry;
+import registry.utils.RedisUtils;
 
 import java.net.InetSocketAddress;
 
