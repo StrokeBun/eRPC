@@ -10,17 +10,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import lombok.Builder;
 import lombok.Getter;
-import serialize.factory.SerializationTypeEnum;
+import constants.enums.SerializationTypeEnum;
 import stub.BaseServerStub;
-import stub.netty.client.NettyClientStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
 
 import java.net.InetSocketAddress;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @description: server stub based on netty

@@ -11,7 +11,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import serialize.factory.SerializationTypeEnum;
+import constants.enums.SerializationTypeEnum;
 import stub.BaseClientStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
@@ -74,7 +74,7 @@ public class NettyClientStub extends BaseClientStub {
             RpcMessage rpcMessage = RpcMessage.builder()
                     .data(request)
                     .serializationType(serializationType.getCode())
-                    .compress((byte) 1)
+                    .compressionType((byte) 1)
                     .messageType(RpcConstants.REQUEST_TYPE)
                     .build();
             channel.writeAndFlush(rpcMessage).addListener((ChannelFutureListener) future -> {

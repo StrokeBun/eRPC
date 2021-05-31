@@ -5,7 +5,7 @@ import constants.StubConstants;
 import dto.Request;
 import dto.Response;
 import lombok.SneakyThrows;
-import serialize.serializer.socket.SocketSerializer;
+import serialization.socket.SocketSerializer;
 import stub.BaseServerStub;
 
 import java.io.IOException;

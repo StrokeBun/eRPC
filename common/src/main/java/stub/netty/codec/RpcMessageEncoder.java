@@ -1,13 +1,15 @@
 package stub.netty.codec;
 
+import compression.Compressor;
+import compression.gzip.GzipCompressor;
 import dto.RpcMessage;
 import constants.RpcConstants;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import serialize.factory.NettySerializerFactory;
-import serialize.factory.SerializationTypeEnum;
-import serialize.serializer.netty.NettySerializer;
+import factory.singleton.serialization.NettySerializerFactory;
+import constants.enums.SerializationTypeEnum;
+import serialization.netty.NettySerializer;
 
 /**
  * @description:
@@ -34,33 +36,54 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
     @Override
     protected void encode(ChannelHandlerContext channelHandlerContext, RpcMessage rpcMessage, ByteBuf out) {
         try {
-            out.writeBytes(RpcConstants.MAGIC_NUMBER);
-            out.writeByte(RpcConstants.VERSION);
-            // leave a place to write the value of full length
-            out.writerIndex(out.writerIndex() + 4);
-            out.writeByte(rpcMessage.getMessageType());
-            byte serializationType = rpcMessage.getSerializationType();
-            out.writeByte(serializationType);
-            // TODO: change compress type
-            int compress = 1;
-            out.writeByte(compress);
-
-            // serialize
-            SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
-            NettySerializer serializer = NettySerializerFactory.getInstance(type);
-            byte[] bodyBytes = serializer.serialize(rpcMessage.getData());
-
-            // write data and full length
-            int fullLength = RpcConstants.HEAD_LENGTH + bodyBytes.length;
+            writeHeader(out, rpcMessage);
+            // write body
+            byte[] bodyBytes = getBodyDataBytes(rpcMessage);
             if (bodyBytes != null) {
                 out.writeBytes(bodyBytes);
             }
-            int writeIndex = out.writerIndex();
-            out.writerIndex(writeIndex - fullLength + RpcConstants.MAGIC_NUMBER.length + 1);
-            out.writeInt(fullLength);
-            out.writerIndex(writeIndex);
+            // write full length
+            int fullLength = RpcConstants.HEAD_LENGTH + bodyBytes.length;
+            writeLength(out, fullLength);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void writeHeader(ByteBuf out, RpcMessage rpcMessage) {
+        out.writeBytes(RpcConstants.MAGIC_NUMBER);
+        out.writeByte(RpcConstants.VERSION);
+        writeInformation(out, rpcMessage);
+    }
+
+    private void writeInformation(ByteBuf out, RpcMessage rpcMessage) {
+        // leave a place to write the value of full length
+        out.writerIndex(out.writerIndex() + 4);
+
+        // write information of message type, serialization and compression
+        out.writeByte(rpcMessage.getMessageType());
+        out.writeByte(rpcMessage.getSerializationType());
+        out.writeByte(rpcMessage.getCompressionType());
+    }
+
+    private void writeLength(ByteBuf out, int length) {
+        int writeIndex = out.writerIndex();
+        out.writerIndex(writeIndex - length + RpcConstants.MAGIC_NUMBER.length + 1);
+        out.writeInt(length);
+        out.writerIndex(writeIndex);
+    }
+
+    private byte[] getBodyDataBytes(RpcMessage rpcMessage) {
+        // serialize
+        byte serializationType = rpcMessage.getSerializationType();
+        SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
+        NettySerializer serializer = NettySerializerFactory.getInstance(type);
+        byte[] bodyBytes = serializer.serialize(rpcMessage.getData());
+
+        // compress
+        Compressor compressor = new GzipCompressor();
+        bodyBytes = compressor.compress(bodyBytes);
+
+        return bodyBytes;
     }
 }

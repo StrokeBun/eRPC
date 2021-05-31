@@ -9,7 +9,7 @@ import java.util.Properties;
  * @author: Stroke
  * @date: 2021/04/21
  */
-public class PropertiesUtils {
+public final class PropertiesUtils {
 
     public static Properties loadProperties(String filename) throws IOException{
         Properties properties = new Properties();

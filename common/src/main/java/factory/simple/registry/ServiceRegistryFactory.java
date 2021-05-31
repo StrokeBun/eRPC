@@ -1,6 +1,7 @@
-package registry.factory;
+package factory.simple.registry;
 
 import registry.ServiceRegistry;
+import constants.enums.RegistryEnum;
 import registry.impl.redis.RedisServiceRegistry;
 import registry.impl.zookeeper.ZookeeperServiceRegistry;
 
@@ -11,12 +12,12 @@ import registry.impl.zookeeper.ZookeeperServiceRegistry;
  */
 public class ServiceRegistryFactory {
 
-    public static ServiceRegistry newInstance(String type, String address) {
+    public static ServiceRegistry newInstance(RegistryEnum type, String address) {
         switch (type) {
-            case "zk": {
+            case ZOOKEEPER: {
                 return new ZookeeperServiceRegistry(address);
             }
-            case "redis": {
+            case REDIS: {
                 return new RedisServiceRegistry(address);
             }
         }

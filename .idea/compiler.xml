@@ -11,5 +11,8 @@
         <module name="demo" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="serialization" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>

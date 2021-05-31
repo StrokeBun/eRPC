@@ -1,11 +1,12 @@
-package serialize.factory;
+package factory.singleton.serialization;
 
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
-import serialize.serializer.socket.HessianSerializer;
-import serialize.serializer.both.KryoSerializer;
-import serialize.serializer.socket.SocketSerializer;
-import serialize.serializer.socket.JdkSerializer;
+import constants.enums.SerializationTypeEnum;
+import serialization.socket.HessianSerializer;
+import serialization.both.KryoSerializer;
+import serialization.socket.SocketSerializer;
+import serialization.socket.JdkSerializer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

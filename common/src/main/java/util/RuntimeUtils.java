@@ -5,7 +5,7 @@ package util;
  * @author: Stroke
  * @date: 2021/05/23
  */
-public class RuntimeUtils {
+public final class RuntimeUtils {
     /**
      * get cpu core number
      * @return cpu core number

@@ -5,9 +5,9 @@ package exception;
  * @author: Stroke
  * @date: 2021/05/09
  */
-public class SerializeException extends RuntimeException {
+public class SerializationException extends RuntimeException {
 
-    public SerializeException(String message) {
+    public SerializationException(String message) {
         super(message);
     }
 }

@@ -4,7 +4,7 @@ import config.RpcClientConfiguration;
 import constants.StubConstants;
 import dto.Request;
 import dto.Response;
-import serialize.serializer.socket.SocketSerializer;
+import serialization.socket.SocketSerializer;
 import stub.BaseClientStub;
 
 import java.io.IOException;

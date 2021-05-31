@@ -15,6 +15,7 @@ public enum ConfigurationErrorMessageEnum {
     MISS_SERVER_CONFIGURATION_FILE("miss configuration file rpc-server-config.properties"),
     MISS_REGISTRY_SERVER_TYPE("miss registry server type"),
     MISS_REGISTRY_SERVER_ADDRESS("miss registry server address"),
+    WRONG_REGISTRY_SERVER_TYPE("wrong registry server type"),
     WRONG_PORT_FORMAT("wrong port format"),
     UNSUPPORTED_SERIALIZE_TYPE("unsupported serialize type");
 

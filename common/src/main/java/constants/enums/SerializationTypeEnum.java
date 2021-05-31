@@ -1,4 +1,4 @@
-package serialize.factory;
+package constants.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +11,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum SerializationTypeEnum {
+    
     KRYO((byte) 0x01, "kryo"),
     PROTOSTUFF((byte) 0x02, "protostuff"),
     JDK((byte) 0x03, "jdk"),

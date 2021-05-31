@@ -1,6 +1,6 @@
-package serialize.serializer.socket;
+package serialization.socket;
 
-import exception.SerializeException;
+import exception.SerializationException;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -15,9 +15,9 @@ public interface SocketSerializer {
      * serialize object and write it using OutputStream
      * @param obj the object to serialize
      * @param os
-     * @throws SerializeException
+     * @throws SerializationException
      */
-    void serialize(Object obj, OutputStream os) throws SerializeException;
+    void serialize(Object obj, OutputStream os) throws SerializationException;
 
     /**
      * deserialize from InputStream
@@ -25,7 +25,7 @@ public interface SocketSerializer {
      * @param clazz
      * @param <T>
      * @return
-     * @throws SerializeException
+     * @throws SerializationException
      */
-    <T> T deserialize(InputStream is, Class<T> clazz) throws SerializeException;
+    <T> T deserialize(InputStream is, Class<T> clazz) throws SerializationException;
 }

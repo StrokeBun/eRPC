@@ -1,13 +1,13 @@
-package serialize.serializer.both;
+package serialization.both;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import dto.Request;
 import dto.Response;
-import exception.SerializeException;
-import serialize.serializer.netty.NettySerializer;
-import serialize.serializer.socket.SocketSerializer;
+import exception.SerializationException;
+import serialization.netty.NettySerializer;
+import serialization.socket.SocketSerializer;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -49,7 +49,7 @@ public class KryoSerializer implements SocketSerializer, NettySerializer {
             kryoThreadLocal.remove();
             return output.toBytes();
         } catch (Exception e) {
-            throw new SerializeException("Serialization failed" + e.getCause());
+            throw new SerializationException("Serialization failed" + e.getCause());
         }
     }
 
@@ -78,7 +78,7 @@ public class KryoSerializer implements SocketSerializer, NettySerializer {
             kryoThreadLocal.remove();
             return (T) result;
         } catch (Exception e) {
-            throw new SerializeException("Deserialization failed" + e.getCause());
+            throw new SerializationException("Deserialization failed" + e.getCause());
         }
     }
 }

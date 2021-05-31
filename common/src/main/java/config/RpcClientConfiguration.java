@@ -1,12 +1,13 @@
 package config;
 
+import constants.enums.RegistryEnum;
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import registry.ServiceDiscovery;
-import registry.factory.ServiceDiscoveryFactory;
+import factory.simple.registry.ServiceDiscoveryFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -48,19 +49,36 @@ public class RpcClientConfiguration {
         static {
             try {
                 Properties properties = PropertiesUtils.loadProperties(CLIENT_CONFIGURATION_FILENAME);
-                // get the information of registry server
-                String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
-                if (registryServerType == null) {
-                    throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
-                }
-                String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
-                if (address == null) {
-                    throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_ADDRESS);
-                }
-                DEFAULT_SERVICE_DISCOVERY = ServiceDiscoveryFactory.newInstance(registryServerType, address);
+                parse(properties);
             } catch (IOException e) {
                 throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_CLIENT_CONFIGURATION_FILE);
             }
+        }
+
+        private static void parse(Properties properties) {
+            parseRegistry(properties);
+        }
+
+
+        private static void parseRegistry(Properties properties) {
+            // parse the registry server address
+            String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
+            if (address == null) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_ADDRESS);
+            }
+
+            // parse the registry server type
+            String registryName = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
+            if (registryName == null) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
+            }
+            RegistryEnum registryType = RegistryEnum.match(registryName);
+            if (registryType == null) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.WRONG_REGISTRY_SERVER_TYPE);
+            }
+
+            // init registry discovery
+            DEFAULT_SERVICE_DISCOVERY = ServiceDiscoveryFactory.newInstance(registryType, address);
         }
     }
 

@@ -10,7 +10,7 @@ import java.lang.reflect.Method;
  * @author: Stroke
  * @date: 2021/05/29
  */
-public class InvokeUtils {
+public final class InvokeUtils {
 
     /**
      * Use reflection to invoke the method.

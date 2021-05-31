@@ -1,10 +1,12 @@
-package serialize.factory;
+package factory.singleton.serialization;
 
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
-import serialize.serializer.both.KryoSerializer;
-import serialize.serializer.netty.NettySerializer;
-import serialize.serializer.netty.ProtostuffSerializer;
+import constants.enums.SerializationTypeEnum;
+import serialization.both.KryoSerializer;
+import serialization.netty.NettySerializer;
+import serialization.netty.ProtostuffSerializer;
+import serialization.socket.JdkSerializer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,6 +22,7 @@ public final class NettySerializerFactory {
         {
             put(SerializationTypeEnum.KRYO, new KryoSerializer());
             put(SerializationTypeEnum.PROTOSTUFF, new ProtostuffSerializer());
+            put(SerializationTypeEnum.JDK, new JdkSerializer());
         }
     };
 

@@ -1,4 +1,4 @@
-package serialize.serializer.netty;
+package serialization.netty;
 
 import io.protostuff.LinkedBuffer;
 import io.protostuff.ProtostuffIOUtil;

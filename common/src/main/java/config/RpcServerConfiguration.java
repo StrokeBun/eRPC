@@ -1,12 +1,13 @@
 package config;
 
+import constants.enums.RegistryEnum;
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import registry.ServiceRegistry;
-import registry.factory.ServiceRegistryFactory;
+import factory.simple.registry.ServiceRegistryFactory;
 import util.PropertiesUtils;
 
 import java.io.IOException;
@@ -55,24 +56,46 @@ public class RpcServerConfiguration {
         static {
             try {
                 Properties properties = PropertiesUtils.loadProperties(SERVER_CONFIGURATION_FILENAME);
-                // get the port of RPC server
-                RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
-
-                // get the information of registry server
-                String registryServerType = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
-                if (registryServerType == null) {
-                    throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
-                }
-                String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
-                if (address == null) {
-                    throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_ADDRESS);
-                }
-                DEFAULT_SERVICE_REGISTRY = ServiceRegistryFactory.newInstance(registryServerType, address);
-            } catch (NumberFormatException e) {
-                throw new ConfigurationException(ConfigurationErrorMessageEnum.WRONG_PORT_FORMAT);
-            }  catch (IOException e) {
+                parse(properties);
+            } catch (IOException e) {
                 throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_SERVER_CONFIGURATION_FILE);
             }
         }
+
+        private static void parse(Properties properties) {
+            parsePort(properties);
+            parseRegistry(properties);
+        }
+
+        private static void parsePort(Properties properties) {
+            try {
+                // get the port of RPC server
+                RPC_SERVER_PORT = Integer.parseInt(properties.getProperty(PORT_KEY));
+            } catch (NumberFormatException e) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.WRONG_PORT_FORMAT);
+            }
+        }
+
+        private static void parseRegistry(Properties properties) {
+            // parse the registry server address
+            String address = properties.getProperty(REGISTRY_SERVER_ADDRESS_KEY);
+            if (address == null) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_ADDRESS);
+            }
+
+            // parse the registry server type
+            String registryName = properties.getProperty(REGISTRY_SERVER_TYPE_KEY);
+            if (registryName == null) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.MISS_REGISTRY_SERVER_TYPE);
+            }
+            RegistryEnum registryType = RegistryEnum.match(registryName);
+            if (registryType == null) {
+                throw new ConfigurationException(ConfigurationErrorMessageEnum.WRONG_REGISTRY_SERVER_TYPE);
+            }
+
+            // init registry registry
+            DEFAULT_SERVICE_REGISTRY = ServiceRegistryFactory.newInstance(registryType, address);
+        }
+
     }
 }

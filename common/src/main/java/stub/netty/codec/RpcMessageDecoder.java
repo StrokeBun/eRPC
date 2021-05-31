@@ -1,5 +1,7 @@
 package stub.netty.codec;
 
+import compression.Compressor;
+import compression.gzip.GzipCompressor;
 import constants.RpcConstants;
 import dto.Request;
 import dto.Response;
@@ -7,9 +9,9 @@ import dto.RpcMessage;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import serialize.factory.NettySerializerFactory;
-import serialize.factory.SerializationTypeEnum;
-import serialize.serializer.netty.NettySerializer;
+import factory.singleton.serialization.NettySerializerFactory;
+import constants.enums.SerializationTypeEnum;
+import serialization.netty.NettySerializer;
 
 import java.util.Arrays;
 
@@ -70,18 +72,22 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         int length = in.readInt();
         byte messageType = in.readByte();
         byte serializationType = in.readByte();
-        byte compress = in.readByte();
+        byte compressionType = in.readByte();
         RpcMessage message = RpcMessage.builder()
                 .messageType(messageType)
                 .serializationType(serializationType)
-                .compress(compress).build();
+                .compressionType(compressionType).build();
 
         int bodyLength = length - RpcConstants.HEAD_LENGTH;
         if (bodyLength > 0) {
             byte[] bytes = new byte[bodyLength];
             in.readBytes(bytes);
 
-            // deserialize the object
+            // decompress
+            Compressor compressor = new GzipCompressor();
+            bytes = compressor.decompress(bytes);
+
+            // deserialize
             SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
             NettySerializer serializer = NettySerializerFactory.getInstance(type);
             Object data = null;
