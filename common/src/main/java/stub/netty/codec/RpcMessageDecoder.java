@@ -1,16 +1,17 @@
 package stub.netty.codec;
 
 import compression.Compressor;
-import compression.gzip.GzipCompressor;
 import constants.RpcConstants;
+import constants.enums.CompressionEnum;
+import constants.enums.SerializationEnum;
 import dto.Request;
 import dto.Response;
 import dto.RpcMessage;
+import factory.singleton.compression.CompressorFactory;
+import factory.singleton.serialization.NettySerializerFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
-import factory.singleton.serialization.NettySerializerFactory;
-import constants.enums.SerializationTypeEnum;
 import serialization.netty.NettySerializer;
 
 import java.util.Arrays;
@@ -71,12 +72,12 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         // read full length, messageType, serialization type and compress
         int length = in.readInt();
         byte messageType = in.readByte();
-        byte serializationType = in.readByte();
-        byte compressionType = in.readByte();
+        byte serializationCode = in.readByte();
+        byte compressionCode = in.readByte();
         RpcMessage message = RpcMessage.builder()
                 .messageType(messageType)
-                .serializationType(serializationType)
-                .compressionType(compressionType).build();
+                .serializationCode(serializationCode)
+                .compressionCode(compressionCode).build();
 
         int bodyLength = length - RpcConstants.HEAD_LENGTH;
         if (bodyLength > 0) {
@@ -84,12 +85,13 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
             in.readBytes(bytes);
 
             // decompress
-            Compressor compressor = new GzipCompressor();
+            CompressionEnum compressionType = CompressionEnum.getType(compressionCode);
+            Compressor compressor = CompressorFactory.getInstance(compressionType);
             bytes = compressor.decompress(bytes);
 
             // deserialize
-            SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
-            NettySerializer serializer = NettySerializerFactory.getInstance(type);
+            SerializationEnum serializationType = SerializationEnum.getType(serializationCode);
+            NettySerializer serializer = NettySerializerFactory.getInstance(serializationType);
             Object data = null;
             if (messageType == RpcConstants.REQUEST_TYPE) {
                 data = serializer.deserialize(bytes, Request.class);

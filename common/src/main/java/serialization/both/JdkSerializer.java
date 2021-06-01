@@ -1,10 +1,9 @@
-package serialization.socket;
+package serialization.both;
 
 
 import exception.SerializationException;
 import serialization.netty.NettySerializer;
-import sun.swing.plaf.synth.DefaultSynthStyle;
-
+import serialization.socket.SocketSerializer;
 import java.io.*;
 
 /**
@@ -26,16 +25,6 @@ public class JdkSerializer implements SocketSerializer, NettySerializer {
     }
 
     @Override
-    public <T> T deserialize(InputStream is, Class<T> clazz) throws SerializationException {
-        try {
-            ObjectInputStream ois = new ObjectInputStream(is);
-            return (T) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
-        }
-    }
-
-    @Override
     public byte[] serialize(Object obj) throws SerializationException {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -44,6 +33,16 @@ public class JdkSerializer implements SocketSerializer, NettySerializer {
             oos.flush();
             return out.toByteArray();
         } catch (IOException e) {
+            throw new SerializationException("Serialization failed" + e.getCause());
+        }
+    }
+
+    @Override
+    public <T> T deserialize(InputStream is, Class<T> clazz) throws SerializationException {
+        try {
+            ObjectInputStream ois = new ObjectInputStream(is);
+            return (T) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
             throw new SerializationException("Serialization failed" + e.getCause());
         }
     }

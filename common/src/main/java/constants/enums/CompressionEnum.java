@@ -6,22 +6,21 @@ import lombok.Getter;
 /**
  * @description:
  * @author: Stroke
- * @date: 2021/05/25
+ * @date: 2021/06/01
  */
 @Getter
 @AllArgsConstructor
-public enum SerializationTypeEnum {
-    
-    KRYO((byte) 0x01, "kryo"),
-    PROTOSTUFF((byte) 0x02, "protostuff"),
-    JDK((byte) 0x03, "jdk"),
-    HESSIAN((byte) 0x04, "hessian");
+public enum CompressionEnum {
+
+    ZIP((byte)0x01, "zip"),
+    GZIP((byte)0x02, "gzip"),
+    BZIP2((byte)0x03, "bzip2");
 
     private final byte code;
     private final String name;
 
-    public static SerializationTypeEnum getType(byte code) {
-        for (SerializationTypeEnum type : SerializationTypeEnum.values()) {
+    public static CompressionEnum getType(byte code) {
+        for (CompressionEnum type : CompressionEnum.values()) {
             if (type.getCode() == code) {
                 return type;
             }

@@ -3,6 +3,7 @@ package stub.netty.server;
 import config.RpcServerConfiguration;
 
 import constants.StubConstants;
+import constants.enums.CompressionEnum;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -11,7 +12,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Getter;
-import constants.enums.SerializationTypeEnum;
+import constants.enums.SerializationEnum;
 import stub.BaseServerStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
@@ -25,7 +26,9 @@ import java.net.InetSocketAddress;
  */
 public class NettyRpcServerStub extends BaseServerStub {
     @Getter
-    private SerializationTypeEnum serializationType = StubConstants.NETTY_STUB_DEFAULT_SERIALIZATION_TYPE;
+    private SerializationEnum serializationType = StubConstants.DEFAULT_SERIALIZATION_TYPE;
+    @Getter
+    private CompressionEnum compressionType = StubConstants.DEFAULT_COMPRESSION_TYPE;
 
     public NettyRpcServerStub() {
         super();
@@ -35,12 +38,12 @@ public class NettyRpcServerStub extends BaseServerStub {
         super(configuration);
     }
 
-    public NettyRpcServerStub(SerializationTypeEnum serializationType) {
+    public NettyRpcServerStub(SerializationEnum serializationType) {
         super();
         this.serializationType = serializationType;
     }
 
-    public NettyRpcServerStub(RpcServerConfiguration configuration, SerializationTypeEnum serializationType) {
+    public NettyRpcServerStub(RpcServerConfiguration configuration, SerializationEnum serializationType) {
         super(configuration);
         this.serializationType = serializationType;
     }

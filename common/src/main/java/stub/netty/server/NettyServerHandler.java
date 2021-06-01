@@ -32,8 +32,8 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
             Response response = serverStub.getResponse(request);
             // generate rpc message
             RpcMessage rpcMessage = RpcMessage.builder()
-                    .serializationType(serverStub.getSerializationType().getCode())
-                    .compressionType((byte) 1)
+                    .serializationCode(serverStub.getSerializationType().getCode())
+                    .compressionCode(serverStub.getCompressionType().getCode())
                     .messageType(RpcConstants.RESPONSE_TYPE)
                     .data(response)
                     .build();

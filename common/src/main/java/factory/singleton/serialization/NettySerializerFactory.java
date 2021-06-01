@@ -2,11 +2,11 @@ package factory.singleton.serialization;
 
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;
-import constants.enums.SerializationTypeEnum;
+import constants.enums.SerializationEnum;
 import serialization.both.KryoSerializer;
 import serialization.netty.NettySerializer;
 import serialization.netty.ProtostuffSerializer;
-import serialization.socket.JdkSerializer;
+import serialization.both.JdkSerializer;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,18 +18,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class NettySerializerFactory {
 
-    private static Map<SerializationTypeEnum, NettySerializer> SERIALIZER_MAP = new ConcurrentHashMap<SerializationTypeEnum, NettySerializer>() {
+    private static Map<SerializationEnum, NettySerializer> SERIALIZER_MAP = new ConcurrentHashMap<SerializationEnum, NettySerializer>() {
         {
-            put(SerializationTypeEnum.KRYO, new KryoSerializer());
-            put(SerializationTypeEnum.PROTOSTUFF, new ProtostuffSerializer());
-            put(SerializationTypeEnum.JDK, new JdkSerializer());
+            put(SerializationEnum.KRYO, new KryoSerializer());
+            put(SerializationEnum.PROTOSTUFF, new ProtostuffSerializer());
+            put(SerializationEnum.JDK, new JdkSerializer());
         }
     };
 
-    public static NettySerializer getInstance(SerializationTypeEnum type) {
+    public static NettySerializer getInstance(SerializationEnum type) {
         final NettySerializer serializer = SERIALIZER_MAP.get(type);
         if (serializer == null) {
-            throw new ConfigurationException(ConfigurationErrorMessageEnum.UNSUPPORTED_SERIALIZE_TYPE);
+            throw new ConfigurationException(ConfigurationErrorMessageEnum.UNSUPPORTED_SERIALIZATION_TYPE);
         }
         return serializer;
     }

@@ -1,14 +1,15 @@
 package stub.netty.codec;
 
 import compression.Compressor;
-import compression.gzip.GzipCompressor;
-import dto.RpcMessage;
 import constants.RpcConstants;
+import constants.enums.CompressionEnum;
+import constants.enums.SerializationEnum;
+import dto.RpcMessage;
+import factory.singleton.compression.CompressorFactory;
+import factory.singleton.serialization.NettySerializerFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import factory.singleton.serialization.NettySerializerFactory;
-import constants.enums.SerializationTypeEnum;
 import serialization.netty.NettySerializer;
 
 /**
@@ -62,8 +63,8 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
 
         // write information of message type, serialization and compression
         out.writeByte(rpcMessage.getMessageType());
-        out.writeByte(rpcMessage.getSerializationType());
-        out.writeByte(rpcMessage.getCompressionType());
+        out.writeByte(rpcMessage.getSerializationCode());
+        out.writeByte(rpcMessage.getCompressionCode());
     }
 
     private void writeLength(ByteBuf out, int length) {
@@ -75,13 +76,15 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
 
     private byte[] getBodyDataBytes(RpcMessage rpcMessage) {
         // serialize
-        byte serializationType = rpcMessage.getSerializationType();
-        SerializationTypeEnum type = SerializationTypeEnum.getType(serializationType);
-        NettySerializer serializer = NettySerializerFactory.getInstance(type);
+        byte serializationCode = rpcMessage.getSerializationCode();
+        SerializationEnum serializationType = SerializationEnum.getType(serializationCode);
+        NettySerializer serializer = NettySerializerFactory.getInstance(serializationType);
         byte[] bodyBytes = serializer.serialize(rpcMessage.getData());
 
         // compress
-        Compressor compressor = new GzipCompressor();
+        byte compressionCode = rpcMessage.getCompressionCode();
+        CompressionEnum compressionType = CompressionEnum.getType(compressionCode);
+        Compressor compressor = CompressorFactory.getInstance(compressionType);
         bodyBytes = compressor.compress(bodyBytes);
 
         return bodyBytes;

@@ -10,7 +10,7 @@ import registry.impl.zookeeper.ZookeeperServiceDiscovery;
  * @author: Stroke
  * @date: 2021/04/28
  */
-public class ServiceDiscoveryFactory {
+public final class ServiceDiscoveryFactory {
 
     public static ServiceDiscovery newInstance(RegistryEnum type, String address) {
         switch (type) {

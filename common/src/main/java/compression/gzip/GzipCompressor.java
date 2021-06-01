@@ -1,6 +1,6 @@
 package compression.gzip;
 
-import compression.Compressor;
+import compression.BaseCompressor;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -9,35 +9,25 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * @description:
+ * @description: compressor based on gzip.
  * @author: Stroke
  * @date: 2021/05/31
  */
-public class GzipCompressor implements Compressor {
-
-    private static final int BUFFER_SIZE = 1024 * 4;
+public class GzipCompressor extends BaseCompressor {
 
     @Override
-    public byte[] compress(byte[] bytes) {
-        if (bytes == null) {
-            throw new NullPointerException("bytes is null");
-        }
+    protected byte[] getCompressBytes(byte[] bytes) throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              GZIPOutputStream gzip = new GZIPOutputStream(out)) {
             gzip.write(bytes);
             gzip.flush();
             gzip.finish();
             return out.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("gzip compress error", e);
         }
     }
 
     @Override
-    public byte[] decompress(byte[] bytes) {
-        if (bytes == null) {
-            throw new NullPointerException("bytes is null");
-        }
+    protected byte[] getDecompressBytes(byte[] bytes) throws IOException {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream();
              GZIPInputStream gunzip = new GZIPInputStream(new ByteArrayInputStream(bytes))) {
             byte[] buffer = new byte[BUFFER_SIZE];
@@ -46,9 +36,12 @@ public class GzipCompressor implements Compressor {
                 out.write(buffer, 0, n);
             }
             return out.toByteArray();
-        } catch (IOException e) {
-            throw new RuntimeException("gzip decompress error", e);
         }
+    }
+
+    @Override
+    protected String getCompressionType() {
+        return "gzip";
     }
 
 }

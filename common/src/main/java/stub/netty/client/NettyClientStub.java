@@ -3,6 +3,7 @@ package stub.netty.client;
 import config.RpcClientConfiguration;
 import constants.RpcConstants;
 import constants.StubConstants;
+import constants.enums.CompressionEnum;
 import dto.Request;
 import dto.Response;
 import dto.RpcMessage;
@@ -11,7 +12,7 @@ import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import constants.enums.SerializationTypeEnum;
+import constants.enums.SerializationEnum;
 import stub.BaseClientStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
@@ -28,7 +29,8 @@ import java.util.concurrent.ExecutionException;
 public class NettyClientStub extends BaseClientStub {
 
     private Bootstrap bootstrap;
-    private SerializationTypeEnum serializationType = StubConstants.NETTY_STUB_DEFAULT_SERIALIZATION_TYPE;
+    private SerializationEnum serializationType = StubConstants.DEFAULT_SERIALIZATION_TYPE;
+    private CompressionEnum compressionType = StubConstants.DEFAULT_COMPRESSION_TYPE;
 
     public NettyClientStub() {
         init();
@@ -73,8 +75,8 @@ public class NettyClientStub extends BaseClientStub {
             UnprocessedRequestContext.put(request.getRequestId(), resultFuture);
             RpcMessage rpcMessage = RpcMessage.builder()
                     .data(request)
-                    .serializationType(serializationType.getCode())
-                    .compressionType((byte) 1)
+                    .serializationCode(serializationType.getCode())
+                    .compressionCode(compressionType.getCode())
                     .messageType(RpcConstants.REQUEST_TYPE)
                     .build();
             channel.writeAndFlush(rpcMessage).addListener((ChannelFutureListener) future -> {

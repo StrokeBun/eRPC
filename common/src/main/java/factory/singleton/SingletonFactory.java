@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/05/31
  */
-public class SingletonFactory {
+public final class SingletonFactory {
 
     private static final Map<Class, Object> SINGLETON_OBJECTS = new ConcurrentHashMap<>();
 
