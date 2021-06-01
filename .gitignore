@@ -1,11 +1,13 @@
 # Compiled class file
 *.class
+*.iml
 
 # dir
 target/
 
 # idea file
 /.idea
+.idea
 
 # Log file
 *.log
