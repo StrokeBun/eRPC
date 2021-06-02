@@ -1,6 +1,5 @@
-package compression.bzip2;
+package compression;
 
-import compression.BaseCompressor;
 import org.apache.tools.bzip2.CBZip2InputStream;
 import org.apache.tools.bzip2.CBZip2OutputStream;
 
@@ -22,7 +21,7 @@ public class Bzip2Compressor extends BaseCompressor {
             bzip2.write(bytes);
             bzip2.flush();
             /**
-             * CBZip2OutputStream will add bzip2 header when it close, so it is necessary to
+             * NOTE: CBZip2OutputStream will add bzip2 header when it close, so it is necessary to
              * invoke CBZip2OutputStream.close() before returning compress data.
              */
             bzip2.close();

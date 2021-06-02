@@ -4,15 +4,18 @@ import config.RpcClientConfiguration;
 import constants.RpcConstants;
 import constants.StubConstants;
 import constants.enums.CompressionEnum;
+import constants.enums.SerializationEnum;
 import dto.Request;
 import dto.Response;
 import dto.RpcMessage;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.*;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelInitializer;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import constants.enums.SerializationEnum;
 import stub.BaseClientStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
@@ -29,6 +32,7 @@ import java.util.concurrent.ExecutionException;
 public class NettyClientStub extends BaseClientStub {
 
     private Bootstrap bootstrap;
+    private ChannelProvider channelProvider;
     private SerializationEnum serializationType = StubConstants.DEFAULT_SERIALIZATION_TYPE;
     private CompressionEnum compressionType = StubConstants.DEFAULT_COMPRESSION_TYPE;
 
@@ -43,8 +47,8 @@ public class NettyClientStub extends BaseClientStub {
 
     private void init() {
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
-        bootstrap = new Bootstrap();
-        bootstrap.group(eventLoopGroup)
+        this.bootstrap = new Bootstrap();
+        this.bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
@@ -55,20 +59,12 @@ public class NettyClientStub extends BaseClientStub {
                                 .addLast(new NettyRpcClientHandler());
                     }
                 });
+        this.channelProvider = new ChannelProvider();
     }
 
     @Override
     public Response sendRequest(Request request, InetSocketAddress address, RpcClientConfiguration configuration) throws ExecutionException, InterruptedException {
-        CompletableFuture<Channel> completableFuture = new CompletableFuture<>();
-        bootstrap.connect(address).addListener((ChannelFutureListener) future -> {
-            if (future.isSuccess()) {
-                completableFuture.complete(future.channel());
-            } else {
-                throw new IllegalStateException();
-            }
-        });
-        Channel channel = completableFuture.get();
-
+        Channel channel = getChannel(address);
         CompletableFuture<Response> resultFuture = new CompletableFuture<>();
         if (channel.isActive()) {
             // send request async
@@ -91,4 +87,24 @@ public class NettyClientStub extends BaseClientStub {
         return resultFuture.get();
     }
 
+    private Channel getChannel(InetSocketAddress address) throws ExecutionException, InterruptedException {
+        Channel channel = channelProvider.get(address);
+        if (channel == null) {
+            channel = doConnect(address);
+            channelProvider.set(address, channel);
+        }
+        return channel;
+    }
+
+    private Channel doConnect(InetSocketAddress address) throws ExecutionException, InterruptedException {
+        CompletableFuture<Channel> completableFuture = new CompletableFuture<>();
+        bootstrap.connect(address).addListener((ChannelFutureListener) future -> {
+            if (future.isSuccess()) {
+                completableFuture.complete(future.channel());
+            } else {
+                throw new IllegalStateException();
+            }
+        });
+        return completableFuture.get();
+    }
 }

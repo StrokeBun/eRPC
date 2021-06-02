@@ -1,9 +1,9 @@
 package factory.singleton.compression;
 
 import compression.Compressor;
-import compression.bzip2.Bzip2Compressor;
-import compression.gzip.GzipCompressor;
-import compression.zip.ZipCompressor;
+import compression.Bzip2Compressor;
+import compression.GzipCompressor;
+import compression.ZipCompressor;
 import constants.enums.CompressionEnum;
 import exception.ConfigurationException;
 import exception.enums.ConfigurationErrorMessageEnum;

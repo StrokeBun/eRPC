@@ -1,6 +1,4 @@
-package compression.gzip;
-
-import compression.BaseCompressor;
+package compression;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
