@@ -1,8 +1,10 @@
 package stub.netty.codec;
 
 import compression.Compressor;
-import constants.RpcConstants;
+import constants.RpcMessageBodyConstants;
+import constants.RpcMessageHeaderConstants;
 import constants.enums.CompressionEnum;
+import constants.enums.RpcMessageTypeEnum;
 import constants.enums.SerializationEnum;
 import dto.Request;
 import dto.Response;
@@ -30,7 +32,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
          * lengthAdjustment: full length include all data and read 9 bytes before, so the left length is (fullLength-9). so values is -9
          * initialBytesToStrip: we will check magic code and version manually, so do not strip any bytes. so values is 0
          */
-        super(RpcConstants.MAX_FRAME_LENGTH, 5, 4, -9, 0);
+        super(RpcMessageBodyConstants.MAX_FRAME_LENGTH, 5, 4, -9, 0);
     }
 
     /**
@@ -53,7 +55,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         Object decoded = super.decode(ctx, in);
         if (decoded instanceof ByteBuf) {
             ByteBuf frame = (ByteBuf) decoded;
-            if (frame.readableBytes() >= RpcConstants.HEAD_LENGTH) {
+            if (frame.readableBytes() >= RpcMessageHeaderConstants.HEAD_LENGTH) {
                 try {
                     return decodeFrame(frame);
                 } catch (Exception e) {
@@ -74,12 +76,21 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         byte messageType = in.readByte();
         byte serializationCode = in.readByte();
         byte compressionCode = in.readByte();
-        RpcMessage message = RpcMessage.builder()
+        RpcMessage rpcMessage = RpcMessage.builder()
                 .messageType(messageType)
                 .serializationCode(serializationCode)
                 .compressionCode(compressionCode).build();
 
-        int bodyLength = length - RpcConstants.HEAD_LENGTH;
+        if (messageType == RpcMessageTypeEnum.HEART_BEAT_REQUEST.getCode()) {
+            rpcMessage.setData(RpcMessageBodyConstants.PING);
+            return rpcMessage;
+        }
+        if (messageType == RpcMessageTypeEnum.HEART_BEAT_RESPONSE.getCode()) {
+            rpcMessage.setData(RpcMessageBodyConstants.PONG);
+            return rpcMessage;
+        }
+
+        int bodyLength = length - RpcMessageHeaderConstants.HEAD_LENGTH;
         if (bodyLength > 0) {
             byte[] bytes = new byte[bodyLength];
             in.readBytes(bytes);
@@ -93,14 +104,14 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
             SerializationEnum serializationType = SerializationEnum.getType(serializationCode);
             NettySerializer serializer = NettySerializerFactory.getInstance(serializationType);
             Object data = null;
-            if (messageType == RpcConstants.REQUEST_TYPE) {
+            if (messageType == RpcMessageTypeEnum.REQUEST.getCode()) {
                 data = serializer.deserialize(bytes, Request.class);
             } else {
                 data = serializer.deserialize(bytes, Response.class);
             }
-            message.setData(data);
+            rpcMessage.setData(data);
         }
-        return message;
+        return rpcMessage;
     }
 
     private void checkFrame(ByteBuf in) {
@@ -109,11 +120,11 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
     }
 
     private void checkMagicNumber(ByteBuf in) {
-        int len = RpcConstants.MAGIC_NUMBER.length;
+        int len = RpcMessageHeaderConstants.MAGIC_NUMBER.length;
         byte[] tmp = new byte[len];
         in.readBytes(tmp);
         for (int i = 0; i < len; i++) {
-            if (tmp[i] != RpcConstants.MAGIC_NUMBER[i]) {
+            if (tmp[i] != RpcMessageHeaderConstants.MAGIC_NUMBER[i]) {
                 throw new RuntimeException("Unknown magic code: " + Arrays.toString(tmp));
             }
         }
@@ -121,7 +132,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     private void checkVersion(ByteBuf in) {
         byte version = in.readByte();
-        if (version != RpcConstants.VERSION) {
+        if (version != RpcMessageHeaderConstants.VERSION) {
             throw new RuntimeException("wrong version");
         }
     }

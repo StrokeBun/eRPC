@@ -1,9 +1,9 @@
 package stub.netty.client;
 
 import config.RpcClientConfiguration;
-import constants.RpcConstants;
 import constants.StubConstants;
 import constants.enums.CompressionEnum;
+import constants.enums.RpcMessageTypeEnum;
 import constants.enums.SerializationEnum;
 import dto.Request;
 import dto.Response;
@@ -47,6 +47,7 @@ public class NettyClientStub extends BaseClientStub {
 
     private void init() {
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
+        final NettyRpcClientHandler handler = new NettyRpcClientHandler(this);
         this.bootstrap = new Bootstrap();
         this.bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
@@ -56,7 +57,7 @@ public class NettyClientStub extends BaseClientStub {
                         socketChannel.pipeline()
                                 .addLast(new RpcMessageEncoder())
                                 .addLast(new RpcMessageDecoder())
-                                .addLast(new NettyRpcClientHandler());
+                                .addLast(handler);
                     }
                 });
         this.channelProvider = new ChannelProvider();
@@ -73,7 +74,7 @@ public class NettyClientStub extends BaseClientStub {
                     .data(request)
                     .serializationCode(serializationType.getCode())
                     .compressionCode(compressionType.getCode())
-                    .messageType(RpcConstants.REQUEST_TYPE)
+                    .messageType(RpcMessageTypeEnum.REQUEST.getCode())
                     .build();
             channel.writeAndFlush(rpcMessage).addListener((ChannelFutureListener) future -> {
                 if (!future.isSuccess()) {
@@ -87,7 +88,7 @@ public class NettyClientStub extends BaseClientStub {
         return resultFuture.get();
     }
 
-    private Channel getChannel(InetSocketAddress address) throws ExecutionException, InterruptedException {
+    public Channel getChannel(InetSocketAddress address) throws ExecutionException, InterruptedException {
         Channel channel = channelProvider.get(address);
         if (channel == null) {
             channel = doConnect(address);
@@ -106,5 +107,13 @@ public class NettyClientStub extends BaseClientStub {
             }
         });
         return completableFuture.get();
+    }
+
+    public SerializationEnum getSerializationType() {
+        return serializationType;
+    }
+
+    public CompressionEnum getCompressionType() {
+        return compressionType;
     }
 }

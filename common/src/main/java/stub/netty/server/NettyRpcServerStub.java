@@ -1,18 +1,18 @@
 package stub.netty.server;
 
 import config.RpcServerConfiguration;
-
 import constants.StubConstants;
 import constants.enums.CompressionEnum;
+import constants.enums.SerializationEnum;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import lombok.Getter;
-import constants.enums.SerializationEnum;
 import stub.BaseServerStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
@@ -59,6 +59,10 @@ public class NettyRpcServerStub extends BaseServerStub {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
+                    // use Nagle
+                    .childOption(ChannelOption.TCP_NODELAY, true)
+                    // use keepalive
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .localAddress(new InetSocketAddress(configuration.getServerPort()))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) {

@@ -1,8 +1,9 @@
 package stub.netty.codec;
 
 import compression.Compressor;
-import constants.RpcConstants;
+import constants.RpcMessageHeaderConstants;
 import constants.enums.CompressionEnum;
+import constants.enums.RpcMessageTypeEnum;
 import constants.enums.SerializationEnum;
 import dto.RpcMessage;
 import factory.singleton.compression.CompressorFactory;
@@ -38,13 +39,17 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
     protected void encode(ChannelHandlerContext channelHandlerContext, RpcMessage rpcMessage, ByteBuf out) {
         try {
             writeHeader(out, rpcMessage);
-            // write body
-            byte[] bodyBytes = getBodyDataBytes(rpcMessage);
-            if (bodyBytes != null) {
-                out.writeBytes(bodyBytes);
+            int fullLength = RpcMessageHeaderConstants.HEAD_LENGTH;
+            // if not heart beat message, write the body message
+            if (notHeartbeatMessage(rpcMessage)) {
+                // write body
+                byte[] bodyBytes = getBodyDataBytes(rpcMessage);
+                if (bodyBytes != null) {
+                    out.writeBytes(bodyBytes);
+                }
+                fullLength += bodyBytes.length;
             }
             // write full length
-            int fullLength = RpcConstants.HEAD_LENGTH + bodyBytes.length;
             writeLength(out, fullLength);
         } catch (Exception e) {
             e.printStackTrace();
@@ -52,8 +57,8 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
     }
 
     private void writeHeader(ByteBuf out, RpcMessage rpcMessage) {
-        out.writeBytes(RpcConstants.MAGIC_NUMBER);
-        out.writeByte(RpcConstants.VERSION);
+        out.writeBytes(RpcMessageHeaderConstants.MAGIC_NUMBER);
+        out.writeByte(RpcMessageHeaderConstants.VERSION);
         writeInformation(out, rpcMessage);
     }
 
@@ -69,7 +74,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
 
     private void writeLength(ByteBuf out, int length) {
         int writeIndex = out.writerIndex();
-        out.writerIndex(writeIndex - length + RpcConstants.MAGIC_NUMBER.length + 1);
+        out.writerIndex(writeIndex - length + RpcMessageHeaderConstants.MAGIC_NUMBER.length + 1);
         out.writeInt(length);
         out.writerIndex(writeIndex);
     }
@@ -88,5 +93,11 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
         bodyBytes = compressor.compress(bodyBytes);
 
         return bodyBytes;
+    }
+
+    private boolean notHeartbeatMessage(RpcMessage rpcMessage) {
+        byte messageType = rpcMessage.getMessageType();
+        return messageType != RpcMessageTypeEnum.HEART_BEAT_REQUEST.getCode() &&
+                messageType != RpcMessageTypeEnum.HEART_BEAT_RESPONSE.getCode();
     }
 }
