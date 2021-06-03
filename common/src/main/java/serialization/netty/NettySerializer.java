@@ -3,7 +3,7 @@ package serialization.netty;
 import exception.SerializationException;
 
 /**
- * @description: interface of serializer used in socket based on netty
+ * @description: Serializer used in {@link stub.netty.client.NettyClientStub} and {@link stub.netty.server.NettyRpcServerStub}.
  * @author: Stroke
  * @date: 2021/05/09
  */

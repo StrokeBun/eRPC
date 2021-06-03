@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description: Singleton factory of io stream serializer.
+ * @description: A singleton factory to create io stream serializer.
  * @author: Stroke
  * @date: 2021/04/22
  */

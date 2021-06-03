@@ -20,7 +20,7 @@ import stub.netty.codec.RpcMessageEncoder;
 import java.net.InetSocketAddress;
 
 /**
- * @description: server stub based on netty
+ * @description: Server stub based on netty.
  * @author: Stroke
  * @date: 2021/05/10
  */

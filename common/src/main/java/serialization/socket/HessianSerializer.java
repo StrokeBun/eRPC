@@ -7,7 +7,7 @@ import exception.SerializationException;
 import java.io.*;
 
 /**
- * @description: Serializer based on Hessian
+ * @description: Serializer based on Hessian.
  * @author: Stroke
  * @date: 2021/04/22
  */

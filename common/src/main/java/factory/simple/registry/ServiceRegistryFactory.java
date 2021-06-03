@@ -6,7 +6,7 @@ import registry.impl.redis.RedisServiceRegistry;
 import registry.impl.zookeeper.ZookeeperServiceRegistry;
 
 /**
- * @description: Simple factory of service registry.
+ * @description: A simple factory to create service registry.
  * @author: Stroke
  * @date: 2021/04/28
  */

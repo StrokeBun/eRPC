@@ -14,7 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description: base implement of server stub
+ * @description: A skeletal implementation of the {@link ServerStub}.
  * @author: Stroke
  * @date: 2021/05/12
  */

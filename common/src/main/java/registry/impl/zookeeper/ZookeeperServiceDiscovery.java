@@ -9,7 +9,7 @@ import registry.utils.CuratorUtils;
 import java.util.List;
 
 /**
- * @description: discover service based on zookeeper
+ * @description: Discover service based on zookeeper.
  * @author: Stroke
  * @date: 2021/04/26
  */

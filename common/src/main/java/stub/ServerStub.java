@@ -3,7 +3,7 @@ package stub;
 import java.net.UnknownHostException;
 
 /**
- * @description: interface of server stub
+ * @description: Rpc server stub.
  * @author: Stroke
  * @date: 2021/05/12
  */

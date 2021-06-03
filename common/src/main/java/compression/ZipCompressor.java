@@ -8,7 +8,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 /**
- * @description: compressor based on zip.
+ * @description: Compressor based on zip.
  * @author: Stroke
  * @date: 2021/06/01
  */

@@ -12,7 +12,7 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 
 /**
- * @description: client stub based on socket
+ * @description: Client stub based on socket.
  * @author: Stroke
  * @date: 2021/04/21
  */

@@ -7,7 +7,7 @@ import serialization.socket.SocketSerializer;
 import java.io.*;
 
 /**
- * @description: Serializer based on jdk
+ * @description: Serializer based on jdk serialization.
  * @author: Stroke
  * @date: 2021/04/22
  */

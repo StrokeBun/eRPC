@@ -3,7 +3,7 @@ package registry;
 import java.net.InetSocketAddress;
 
 /**
- * @description: Base implement of ServiceRegistry
+ * @description: A skeletal implementation of the {@link ServiceRegistry}
  * @author: Stroke
  * @date: 2021/04/27
  */

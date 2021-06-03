@@ -3,6 +3,11 @@ package constants.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * @description: Enums of rpc message type transported in network.
+ * @author: Stroke
+ * @date: 2021/06/03
+ */
 @AllArgsConstructor
 @Getter
 public enum RpcMessageTypeEnum {

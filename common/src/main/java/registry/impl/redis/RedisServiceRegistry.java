@@ -7,7 +7,7 @@ import registry.utils.RedisUtils;
 import java.net.InetSocketAddress;
 
 /**
- * @description: register service based on redis
+ * @description: Register service based on redis
  * @author: Stroke
  * @date: 2021/04/30
  */

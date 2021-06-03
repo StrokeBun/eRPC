@@ -14,7 +14,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @description: zookeeper utils
+ * @description: Tool methods for connecting and operating zookeeper.
  * @author: Stroke
  * @date: 2021/04/26
  */
@@ -48,7 +48,6 @@ public final class CuratorUtils {
 
     /**
      * Gets the children under a node
-     *
      * @param rpcServiceName rpc service name eg:github.javaguide.HelloServicetest2version1
      * @return All child nodes under the specified node
      */

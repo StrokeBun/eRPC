@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description: factory of singleton object
+ * @description: A factory to create singleton object.
  * @author: Stroke
  * @date: 2021/05/31
  */
@@ -27,5 +27,9 @@ public final class SingletonFactory {
        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
            throw new RuntimeException(e.getMessage(), e);
        }
+    }
+
+    private SingletonFactory() {
+
     }
 }

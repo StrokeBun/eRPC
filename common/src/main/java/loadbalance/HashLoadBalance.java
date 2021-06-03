@@ -5,7 +5,7 @@ import java.net.UnknownHostException;
 import java.util.List;
 
 /**
- * @description: load balance according to hash based on local ip
+ * @description: Load balance according to ip-based hash.
  * @author: Stroke
  * @date: 2021/05/06
  */

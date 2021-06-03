@@ -15,7 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @description: Serializer based on kryo
+ * @description: Serializer based on kryo.
  * @author: Stroke
  * @date: 2021/04/22
  */

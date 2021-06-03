@@ -10,7 +10,7 @@ import java.util.List;
 
 
 /**
- * @description: Base implement of ServiceDiscovery
+ * @description: A skeletal implementation of the {@link ServiceDiscovery}
  * @author: Stroke
  * @date: 2021/04/27
  */

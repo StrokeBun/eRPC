@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * @description:
+ * @description: Enums of compression type.
  * @author: Stroke
  * @date: 2021/05/25
  */

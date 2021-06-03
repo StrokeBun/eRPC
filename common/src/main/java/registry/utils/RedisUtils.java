@@ -9,7 +9,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description: redis utils
+ * @description: Tool methods for connecting and operating redis.
  * @author: Stroke
  * @date: 2021/04/30
  */

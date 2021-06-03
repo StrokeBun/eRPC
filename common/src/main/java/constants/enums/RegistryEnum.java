@@ -3,6 +3,11 @@ package constants.enums;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * @description: Enums of registry server type.
+ * @author: Stroke
+ * @date: 2021/06/03
+ */
 @Getter
 @AllArgsConstructor
 public enum RegistryEnum {

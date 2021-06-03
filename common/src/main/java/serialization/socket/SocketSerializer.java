@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
- * @description: interface of serializer used in stub based on socket
+ * @description: Serializer used in {@link stub.socket.SocketClientStub} and {@link stub.socket.SocketServerStub}.
  * @author: Stroke
  * @date: 2021/05/09
  */

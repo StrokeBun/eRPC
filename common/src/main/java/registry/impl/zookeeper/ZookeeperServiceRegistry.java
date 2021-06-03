@@ -7,7 +7,7 @@ import registry.utils.CuratorUtils;
 import java.net.InetSocketAddress;
 
 /**
- * @description: register service based on zookeeper
+ * @description: Register service based on zookeeper.
  * @author: Stroke
  * @date: 2021/04/26
  */

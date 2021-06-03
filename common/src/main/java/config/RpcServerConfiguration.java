@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * @description: Configuration of server
+ * @description: Configuration of server.
  * @author: Stroke
  * @date: 2021/04/21
  */

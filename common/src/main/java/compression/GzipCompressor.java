@@ -7,7 +7,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * @description: compressor based on gzip.
+ * @description: Compressor based on gzip.
  * @author: Stroke
  * @date: 2021/05/31
  */

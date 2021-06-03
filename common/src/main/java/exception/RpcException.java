@@ -3,7 +3,7 @@ package exception;
 import exception.enums.RpcErrorMessageEnum;
 
 /**
- * @description: Exception thrown by RPC invoke.
+ * @description: Exception caused by RPC invoke.
  * @author: Stroke
  * @date: 2021/04/29
  */

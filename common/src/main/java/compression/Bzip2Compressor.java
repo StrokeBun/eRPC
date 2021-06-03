@@ -8,7 +8,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 /**
- * @description: compressor based on bzip2.
+ * @description: Compressor based on bzip2.
  * @author: Stroke
  * @date: 2021/06/01
  */

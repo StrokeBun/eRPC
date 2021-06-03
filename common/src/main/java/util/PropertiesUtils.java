@@ -5,7 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 
 /**
- * @description: tools of properties.
+ * @description: Tools for properties.
  * @author: Stroke
  * @date: 2021/04/21
  */

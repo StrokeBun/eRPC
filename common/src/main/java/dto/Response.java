@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.io.Serializable;
 
 /**
- * @description: RPC response from server
+ * @description: RPC response from server.
  * @author: Stroke
  * @date: 2021/04/18
  */

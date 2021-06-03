@@ -16,7 +16,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 /**
- * @description: base implement of client stub
+ * @description: A skeletal implementation of the {@link ClientStub}.
  * @author: Stroke
  * @date: 2021/05/12
  */

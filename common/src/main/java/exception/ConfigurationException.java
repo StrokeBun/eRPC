@@ -3,7 +3,7 @@ package exception;
 import exception.enums.ConfigurationErrorMessageEnum;
 
 /**
- * @description: Exception thrown by configuration file error.
+ * @description: Exception caused by configuration file error.
  * @author: Stroke
  * @date: 2021/04/29
  */

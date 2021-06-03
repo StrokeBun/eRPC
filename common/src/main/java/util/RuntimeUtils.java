@@ -1,7 +1,7 @@
 package util;
 
 /**
- * @description:
+ * @description: Tools for runtime.
  * @author: Stroke
  * @date: 2021/05/23
  */

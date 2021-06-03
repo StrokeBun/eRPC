@@ -3,7 +3,7 @@ package compression;
 import java.io.IOException;
 
 /**
- * @description:
+ * @description: A skeletal implementation of the {@link Compressor}
  * @author: Stroke
  * @date: 2021/06/01
  */

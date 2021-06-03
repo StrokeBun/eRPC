@@ -3,7 +3,7 @@ package loadbalance;
 import java.util.List;
 
 /**
- * @description: base implement of load balance
+ * @description: A skeletal implementation of the {@link LoadBalance}
  * @author: Stroke
  * @date: 2021/05/06
  */

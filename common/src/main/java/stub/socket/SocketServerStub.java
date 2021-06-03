@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
- * @description: server stub based on socket
+ * @description: Server stub based on socket.
  * @author: Stroke
  * @date: 2021/04/21
  */

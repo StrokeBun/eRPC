@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 /**
- * @description: client stub based on netty
+ * @description: Client stub based on netty.
  * @author: Stroke
  * @date: 2021/05/10
  */

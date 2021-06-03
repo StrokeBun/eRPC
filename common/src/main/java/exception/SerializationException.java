@@ -1,7 +1,7 @@
 package exception;
 
 /**
- * @description:
+ * @description: Exception caused by serialization.
  * @author: Stroke
  * @date: 2021/05/09
  */

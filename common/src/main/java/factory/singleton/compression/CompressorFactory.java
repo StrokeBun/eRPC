@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @description:
+ * @description: A singleton factory to create compressor.
  * @author: Stroke
  * @date: 2021/06/01
  */
