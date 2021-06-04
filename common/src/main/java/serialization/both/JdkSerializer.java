@@ -1,9 +1,11 @@
 package serialization.both;
 
 
+import exception.DeserializationException;
 import exception.SerializationException;
 import serialization.netty.NettySerializer;
 import serialization.socket.SocketSerializer;
+
 import java.io.*;
 
 /**
@@ -20,7 +22,7 @@ public class JdkSerializer implements SocketSerializer, NettySerializer {
             oos.writeObject(obj);
             oos.flush();
         } catch (IOException e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
+            throw new SerializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 
@@ -33,7 +35,7 @@ public class JdkSerializer implements SocketSerializer, NettySerializer {
             oos.flush();
             return out.toByteArray();
         } catch (IOException e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
+            throw new SerializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 
@@ -43,7 +45,7 @@ public class JdkSerializer implements SocketSerializer, NettySerializer {
             ObjectInputStream ois = new ObjectInputStream(is);
             return (T) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
+            throw new DeserializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 
@@ -54,7 +56,7 @@ public class JdkSerializer implements SocketSerializer, NettySerializer {
             ObjectInputStream ois = new ObjectInputStream(in);
             return (T) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
+            throw new DeserializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 }

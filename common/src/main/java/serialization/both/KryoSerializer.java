@@ -5,6 +5,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import dto.Request;
 import dto.Response;
+import exception.DeserializationException;
 import exception.SerializationException;
 import serialization.netty.NettySerializer;
 import serialization.socket.SocketSerializer;
@@ -49,17 +50,10 @@ public class KryoSerializer implements SocketSerializer, NettySerializer {
             kryoThreadLocal.remove();
             return output.toBytes();
         } catch (Exception e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
+            throw new SerializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 
-    /**
-     *
-     * @param is
-     * @param clazz
-     * @param <T> the class type, need a default constructor
-     * @return
-     */
     @Override
     public <T> T deserialize(InputStream is, Class<T> clazz) {
         Kryo kryo = kryoThreadLocal.get();
@@ -78,7 +72,7 @@ public class KryoSerializer implements SocketSerializer, NettySerializer {
             kryoThreadLocal.remove();
             return (T) result;
         } catch (Exception e) {
-            throw new SerializationException("Deserialization failed" + e.getCause());
+            throw new DeserializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 }

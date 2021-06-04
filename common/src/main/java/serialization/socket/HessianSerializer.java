@@ -2,6 +2,7 @@ package serialization.socket;
 
 import com.caucho.hessian.io.Hessian2Input;
 import com.caucho.hessian.io.Hessian2Output;
+import exception.DeserializationException;
 import exception.SerializationException;
 
 import java.io.*;
@@ -20,7 +21,7 @@ public class HessianSerializer implements SocketSerializer {
             output.writeObject(obj);
             output.flush();
         } catch (IOException e) {
-            throw new SerializationException("Serialization failed" + e.getCause());
+            throw new SerializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 
@@ -30,7 +31,7 @@ public class HessianSerializer implements SocketSerializer {
             Hessian2Input input = new Hessian2Input(is);
             return (T)input.readObject();
         } catch (IOException e) {
-            throw new SerializationException("Deserialization failed" + e.getCause());
+            throw new DeserializationException(this.getClass().getSimpleName() + " " + e.getCause());
         }
     }
 
