@@ -11,12 +11,14 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 import io.netty.util.ReferenceCountUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @description:
  * @author: Stroke
  * @date: 2021/05/25
  */
+@Slf4j
 public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     private NettyRpcServerStub serverStub;
@@ -58,7 +60,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
         if (evt instanceof IdleStateEvent) {
             IdleState state = ((IdleStateEvent) evt).state();
             if (state == IdleState.READER_IDLE) {
-                System.out.println("idle check happen, so close the connection");
+                log.info("idle check happen, so close the connection");
                 ctx.close();
             }
         } else {
@@ -73,7 +75,7 @@ public class NettyServerHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        log.info(cause.toString());
         ctx.close();
     }
 

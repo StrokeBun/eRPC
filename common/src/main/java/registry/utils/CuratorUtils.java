@@ -1,5 +1,6 @@
 package registry.utils;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
 import org.apache.curator.framework.CuratorFrameworkFactory;
@@ -18,6 +19,7 @@ import java.util.concurrent.TimeUnit;
  * @author: Stroke
  * @date: 2021/04/26
  */
+@Slf4j
 public final class CuratorUtils {
 
     private static final int BASE_SLEEP_TIME = 1000;
@@ -42,7 +44,7 @@ public final class CuratorUtils {
             }
             REGISTERED_PATH_SET.add(path);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("create persistent node for path [{}] fail", path);
         }
     }
 
@@ -61,7 +63,7 @@ public final class CuratorUtils {
             result = zkClient.getChildren().forPath(servicePath);
             SERVICE_ADDRESS_MAP.put(rpcServiceName, result);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("get children nodes for path [{}] fail", servicePath);
         }
         return result;
     }
@@ -76,7 +78,7 @@ public final class CuratorUtils {
                     zkClient.delete().forPath(p);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+                log.error("clear registry for path [{}] fail", p);
             }
         });
     }
@@ -101,7 +103,7 @@ public final class CuratorUtils {
                 throw new RuntimeException("Time out waiting to connect to ZK!");
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            log.info("connect to zookeeper(" + zookeeperAddress + ") failed" );
         }
         ZK_CLIENT_MAP.put(zookeeperAddress, zkClient);
         return zkClient;

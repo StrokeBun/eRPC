@@ -14,6 +14,7 @@ import factory.singleton.serialization.NettySerializerFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import lombok.extern.slf4j.Slf4j;
 import serialization.netty.NettySerializer;
 
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.Arrays;
  * @author: Stroke
  * @date: 2021/05/25
  */
+@Slf4j
 public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     public RpcMessageDecoder() {
@@ -59,7 +61,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
                 try {
                     return decodeFrame(frame);
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    log.info("Decode rpc message failed");
                     throw e;
                 } finally {
                     frame.release();

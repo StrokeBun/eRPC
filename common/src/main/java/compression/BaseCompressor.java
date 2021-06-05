@@ -1,5 +1,8 @@
 package compression;
 
+import exception.CompressionException;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
 
 /**
@@ -7,6 +10,7 @@ import java.io.IOException;
  * @author: Stroke
  * @date: 2021/06/01
  */
+@Slf4j
 public abstract class BaseCompressor implements Compressor{
 
     protected static final int BUFFER_SIZE = 1024 * 4;
@@ -20,7 +24,8 @@ public abstract class BaseCompressor implements Compressor{
             byte[] b = getCompressBytes(bytes);
             return b;
         } catch (IOException e) {
-            throw new RuntimeException(getCompressionType() + " decompress error", e);
+            log.info(getCompressionType() + " compress failed.");
+            throw new CompressionException(getCompressionType() + " compress error " + e.getCause());
         }
     }
 
@@ -33,7 +38,8 @@ public abstract class BaseCompressor implements Compressor{
             byte[] b = getDecompressBytes(bytes);
             return b;
         } catch (IOException e) {
-            throw new RuntimeException(getCompressionType() + " decompress error", e);
+            log.info(getCompressionType() + " decompress failed.");
+            throw new CompressionException(getCompressionType() + " decompress error " + e.getCause());
         }
     }
 

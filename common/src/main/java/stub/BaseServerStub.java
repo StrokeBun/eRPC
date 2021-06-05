@@ -3,6 +3,7 @@ package stub;
 import config.RpcServerConfiguration;
 import dto.Request;
 import dto.Response;
+import lombok.extern.slf4j.Slf4j;
 import registry.ServiceRegistry;
 import util.InvokeUtils;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author: Stroke
  * @date: 2021/05/12
  */
+@Slf4j
 public abstract class BaseServerStub implements ServerStub {
 
     protected RpcServerConfiguration configuration ;
@@ -72,10 +74,13 @@ public abstract class BaseServerStub implements ServerStub {
         try {
             result = InvokeUtils.invoke(request);
         } catch (ClassNotFoundException e) {
-            response.setError("class not found");
+            log.info("class not found");
+            response.setError("class not found: " + e.getCause());
         } catch (NoSuchMethodException e) {
-            response.setError("method not found");
+            log.info("method not found");
+            response.setError("method not found: " + e.getCause());
         } catch (Exception e){
+            log.info("function inner error: " + e.getCause());
             response.setError("function inner error");
         } finally {
             response.setResult(result);

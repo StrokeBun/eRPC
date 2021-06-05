@@ -5,6 +5,7 @@ import dto.Request;
 import dto.Response;
 import exception.RpcException;
 import exception.enums.RpcErrorMessageEnum;
+import lombok.extern.slf4j.Slf4j;
 import registry.ServiceDiscovery;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import java.util.concurrent.ExecutionException;
  * @author: Stroke
  * @date: 2021/05/12
  */
+@Slf4j
 public abstract class BaseClientStub implements ClientStub {
     private static final String INTERFACE_NAME = "interfaceName";
     private RpcClientConfiguration configuration;
@@ -43,13 +45,16 @@ public abstract class BaseClientStub implements ClientStub {
                         return method.invoke(this, args);
                     }
                 } catch (Throwable e) {
-                    e.printStackTrace();
+                    log.info("local invocation failed");;
                 }
 
                 // discover the rpc server socket address
                 String className = clazz.getSimpleName();
                 final ServiceDiscovery discovery = configuration.getServiceDiscovery();
                 InetSocketAddress address = discovery.discoverService(className);
+                if (address == null) {
+                    throw new RpcException(RpcErrorMessageEnum.SERVICE_CANT_BE_FOUND);
+                }
 
                 // generate request
                 Request request = new Request();

@@ -11,6 +11,7 @@ import factory.singleton.serialization.NettySerializerFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import lombok.extern.slf4j.Slf4j;
 import serialization.netty.NettySerializer;
 
 /**
@@ -33,6 +34,7 @@ import serialization.netty.NettySerializer;
  * @author: Stroke
  * @date: 2021/05/23
  */
+@Slf4j
 public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
 
     @Override
@@ -52,7 +54,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
             // write full length
             writeLength(out, fullLength);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.info("Encode rpc message failed");
         }
     }
 
