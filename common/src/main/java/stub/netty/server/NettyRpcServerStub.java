@@ -12,6 +12,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import lombok.Getter;
 import stub.BaseServerStub;
 import stub.netty.codec.RpcMessageDecoder;
@@ -52,7 +54,7 @@ public class NettyRpcServerStub extends BaseServerStub {
     @Override
     public void run() throws Exception {
 
-        final NettyServerHandler handler = new NettyServerHandler(this);
+        final NettyRpcServerHandler handler = new NettyRpcServerHandler(this);
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -69,7 +71,8 @@ public class NettyRpcServerStub extends BaseServerStub {
                             socketChannel.pipeline()
                                     .addLast(new RpcMessageEncoder())
                                     .addLast(new RpcMessageDecoder())
-                                    .addLast(handler);
+                                    .addLast(handler)
+                                    .addLast(new LoggingHandler(LogLevel.INFO));
                         }
                     });
             ChannelFuture future = bootstrap.bind().sync();

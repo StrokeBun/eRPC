@@ -16,6 +16,8 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import stub.BaseClientStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
@@ -29,18 +31,18 @@ import java.util.concurrent.ExecutionException;
  * @author: Stroke
  * @date: 2021/05/10
  */
-public class NettyClientStub extends BaseClientStub {
+public class NettyRpcClientStub extends BaseClientStub {
 
     private Bootstrap bootstrap;
     private ChannelProvider channelProvider;
     private SerializationEnum serializationType = StubConstants.DEFAULT_SERIALIZATION_TYPE;
     private CompressionEnum compressionType = StubConstants.DEFAULT_COMPRESSION_TYPE;
 
-    public NettyClientStub() {
+    public NettyRpcClientStub() {
         init();
     }
 
-    public NettyClientStub(RpcClientConfiguration configuration) {
+    public NettyRpcClientStub(RpcClientConfiguration configuration) {
         super(configuration);
         init();
     }
@@ -57,7 +59,8 @@ public class NettyClientStub extends BaseClientStub {
                         socketChannel.pipeline()
                                 .addLast(new RpcMessageEncoder())
                                 .addLast(new RpcMessageDecoder())
-                                .addLast(handler);
+                                .addLast(handler)
+                                .addLast(new LoggingHandler(LogLevel.INFO));
                     }
                 });
         this.channelProvider = new ChannelProvider();

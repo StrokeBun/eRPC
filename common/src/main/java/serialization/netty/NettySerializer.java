@@ -1,9 +1,10 @@
 package serialization.netty;
 
 import exception.SerializationException;
+import stub.netty.client.NettyRpcClientStub;
 
 /**
- * @description: Serializer used in {@link stub.netty.client.NettyClientStub} and {@link stub.netty.server.NettyRpcServerStub}.
+ * @description: Serializer used in {@link NettyRpcClientStub} and {@link stub.netty.server.NettyRpcServerStub}.
  * @author: Stroke
  * @date: 2021/05/09
  */

@@ -50,6 +50,7 @@ public abstract class BaseServerStub implements ServerStub {
         final ServiceRegistry serviceRegistry = configuration.getServiceRegistry();
         InetSocketAddress address = new InetSocketAddress(ip, serverPort);
         serviceRegistry.registerService(interfaceName, address);
+        log.info("register service: " + interfaceName + " in " + address);
     }
 
     protected void removeService() throws UnknownHostException {
@@ -74,13 +75,13 @@ public abstract class BaseServerStub implements ServerStub {
         try {
             result = InvokeUtils.invoke(request);
         } catch (ClassNotFoundException e) {
-            log.info("class not found");
+            log.error("class not found");
             response.setError("class not found: " + e.getCause());
         } catch (NoSuchMethodException e) {
-            log.info("method not found");
+            log.error("method not found");
             response.setError("method not found: " + e.getCause());
         } catch (Exception e){
-            log.info("function inner error: " + e.getCause());
+            log.error("function inner error: " + e.getCause());
             response.setError("function inner error");
         } finally {
             response.setResult(result);

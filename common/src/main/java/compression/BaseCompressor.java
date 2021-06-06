@@ -18,13 +18,14 @@ public abstract class BaseCompressor implements Compressor{
     @Override
     public byte[] compress(byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException("the byte array to compress is null");
+            log.warn("the input byte array is null");
+            return null;
         }
         try {
             byte[] b = getCompressBytes(bytes);
             return b;
         } catch (IOException e) {
-            log.info(getCompressionType() + " compress failed.");
+            log.error(getCompressionType() + " compress failed.");
             throw new CompressionException(getCompressionType() + " compress error " + e.getCause());
         }
     }
@@ -32,13 +33,14 @@ public abstract class BaseCompressor implements Compressor{
     @Override
     public byte[] decompress(byte[] bytes) {
         if (bytes == null) {
-            throw new NullPointerException("the byte array to decompress is null");
+            log.warn("the input byte array is null");
+            return null;
         }
         try {
             byte[] b = getDecompressBytes(bytes);
             return b;
         } catch (IOException e) {
-            log.info(getCompressionType() + " decompress failed.");
+            log.error(getCompressionType() + " decompress failed.");
             throw new CompressionException(getCompressionType() + " decompress error " + e.getCause());
         }
     }

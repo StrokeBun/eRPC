@@ -45,7 +45,7 @@ public abstract class BaseClientStub implements ClientStub {
                         return method.invoke(this, args);
                     }
                 } catch (Throwable e) {
-                    log.info("local invocation failed");;
+                    log.error("local invocation failed");;
                 }
 
                 // discover the rpc server socket address

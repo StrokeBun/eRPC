@@ -54,6 +54,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
 
     @Override
     protected Object decode(ChannelHandlerContext ctx, ByteBuf in) throws Exception {
+        log.info("receive message from " + ctx.channel().remoteAddress());
         Object decoded = super.decode(ctx, in);
         if (decoded instanceof ByteBuf) {
             ByteBuf frame = (ByteBuf) decoded;
@@ -61,7 +62,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
                 try {
                     return decodeFrame(frame);
                 } catch (Exception e) {
-                    log.info("Decode rpc message failed");
+                    log.error("Decode rpc message failed");
                     throw e;
                 } finally {
                     frame.release();
@@ -127,6 +128,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
         in.readBytes(tmp);
         for (int i = 0; i < len; i++) {
             if (tmp[i] != RpcMessageHeaderConstants.MAGIC_NUMBER[i]) {
+                log.error("magic code not match");
                 throw new RuntimeException("Unknown magic code: " + Arrays.toString(tmp));
             }
         }
@@ -135,6 +137,7 @@ public class RpcMessageDecoder extends LengthFieldBasedFrameDecoder {
     private void checkVersion(ByteBuf in) {
         byte version = in.readByte();
         if (version != RpcMessageHeaderConstants.VERSION) {
+            log.error("version not match");
             throw new RuntimeException("wrong version");
         }
     }

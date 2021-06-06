@@ -54,7 +54,7 @@ public class RpcMessageEncoder extends MessageToByteEncoder<RpcMessage> {
             // write full length
             writeLength(out, fullLength);
         } catch (Exception e) {
-            log.info("Encode rpc message failed");
+            log.error("Encode rpc message failed");
         }
     }
 

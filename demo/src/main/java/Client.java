@@ -1,7 +1,7 @@
 import entity.User;
 import service.UserService;
 import stub.ClientStub;
-import stub.netty.client.NettyClientStub;
+import stub.netty.client.NettyRpcClientStub;
 
 /**
  * @description:
@@ -13,7 +13,7 @@ public class Client {
         //Serializer serializer = new JdkSerializer();
         //ServiceDiscovery discovery = new RedisServiceDiscovery("localhost");
         //ClientStub stub = new ClientStub(serializer, discovery);
-        ClientStub stub = new NettyClientStub();
+        ClientStub stub = new NettyRpcClientStub();
         UserService service = stub.getInstance(UserService.class);
 
         User user = service.getUser(1, "bzzb");
