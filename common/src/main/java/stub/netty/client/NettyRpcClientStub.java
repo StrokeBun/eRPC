@@ -15,10 +15,14 @@ import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioChannelOption;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import stub.BaseClientStub;
+import stub.netty.client.handler.KeepaliveHandler;
+import stub.netty.client.handler.NettyRpcClientMessageHandler;
+import stub.netty.client.handler.NettyRpcClientIdleCheckHandler;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
 
@@ -48,19 +52,22 @@ public class NettyRpcClientStub extends BaseClientStub {
     }
 
     private void init() {
+        final NettyRpcClientStub clientStub = this;
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
-        final NettyRpcClientHandler handler = new NettyRpcClientHandler(this);
         this.bootstrap = new Bootstrap();
         this.bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
+                .option(NioChannelOption.CONNECT_TIMEOUT_MILLIS, 10*1000)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
                     protected void initChannel(SocketChannel socketChannel) {
                         socketChannel.pipeline()
-                                .addLast(new RpcMessageEncoder())
-                                .addLast(new RpcMessageDecoder())
-                                .addLast(handler)
-                                .addLast(new LoggingHandler(LogLevel.INFO));
+                                .addLast("clientIdleCheckHandler", new NettyRpcClientIdleCheckHandler())
+                                .addLast("rpcMessageEncoder", new RpcMessageEncoder())
+                                .addLast("rpcMessageDecoder", new RpcMessageDecoder())
+                                .addLast("clientMessageHandler", new NettyRpcClientMessageHandler())
+                                .addLast("keepaliveHandler", new KeepaliveHandler(clientStub))
+                                .addLast("serverLoggingHandler", new LoggingHandler(LogLevel.INFO));
                     }
                 });
         this.channelProvider = new ChannelProvider();

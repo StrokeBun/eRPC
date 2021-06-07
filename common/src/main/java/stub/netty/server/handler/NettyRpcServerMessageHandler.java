@@ -1,4 +1,4 @@
-package stub.netty.server;
+package stub.netty.server.handler;
 
 import constants.RpcMessageBodyConstants;
 import constants.enums.RpcMessageTypeEnum;
@@ -8,9 +8,8 @@ import dto.RpcMessage;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.handler.timeout.IdleState;
-import io.netty.handler.timeout.IdleStateEvent;
 import lombok.extern.slf4j.Slf4j;
+import stub.netty.server.NettyRpcServerStub;
 
 /**
  * @description:
@@ -18,10 +17,10 @@ import lombok.extern.slf4j.Slf4j;
  * @date: 2021/05/25
  */
 @Slf4j
-public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcMessage> {
+public class NettyRpcServerMessageHandler extends SimpleChannelInboundHandler<RpcMessage> {
     private NettyRpcServerStub serverStub;
 
-    public NettyRpcServerHandler(NettyRpcServerStub serverStub) {
+    public NettyRpcServerMessageHandler(NettyRpcServerStub serverStub) {
         this.serverStub = serverStub;
     }
 
@@ -47,19 +46,5 @@ public class NettyRpcServerHandler extends SimpleChannelInboundHandler<RpcMessag
             rpcMessage.setData(response);
         }
         ctx.writeAndFlush(rpcMessage).addListener(ChannelFutureListener.CLOSE_ON_FAILURE);
-    }
-
-    // heart beat
-    @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent) {
-            IdleState state = ((IdleStateEvent) evt).state();
-            if (state == IdleState.READER_IDLE) {
-                log.warn("idle check happen, so close the connection");
-                ctx.close();
-            }
-        } else {
-            super.userEventTriggered(ctx, evt);
-        }
     }
 }

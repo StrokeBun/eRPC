@@ -14,10 +14,13 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import lombok.Getter;
 import stub.BaseServerStub;
 import stub.netty.codec.RpcMessageDecoder;
 import stub.netty.codec.RpcMessageEncoder;
+import stub.netty.server.handler.NettyRpcServerIdleCheckHandler;
+import stub.netty.server.handler.NettyRpcServerMessageHandler;
 
 import java.net.InetSocketAddress;
 
@@ -53,26 +56,25 @@ public class NettyRpcServerStub extends BaseServerStub {
 
     @Override
     public void run() throws Exception {
-
-        final NettyRpcServerHandler handler = new NettyRpcServerHandler(this);
-        EventLoopGroup bossGroup = new NioEventLoopGroup();
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        final NettyRpcServerStub serverStub = this;
+        EventLoopGroup bossGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("boos"));
+        EventLoopGroup workerGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("worker"));
+        // TODO: add handler thread pool.
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     // use Nagle
                     .childOption(ChannelOption.TCP_NODELAY, true)
-                    // use keepalive
-                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .localAddress(new InetSocketAddress(configuration.getServerPort()))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel socketChannel) {
                             socketChannel.pipeline()
-                                    .addLast(new RpcMessageEncoder())
-                                    .addLast(new RpcMessageDecoder())
-                                    .addLast(handler)
-                                    .addLast(new LoggingHandler(LogLevel.INFO));
+                                    .addLast("serverIdleCheckHandler", new NettyRpcServerIdleCheckHandler())
+                                    .addLast("rpcMessageEncoder", new RpcMessageEncoder())
+                                    .addLast("rpcMessageDecoder", new RpcMessageDecoder())
+                                    .addLast("serverMessageHandler", new NettyRpcServerMessageHandler(serverStub))
+                                    .addLast("serverLoggingHandler", new LoggingHandler(LogLevel.INFO));
                         }
                     });
             ChannelFuture future = bootstrap.bind().sync();
