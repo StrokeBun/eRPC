@@ -53,7 +53,6 @@ public class NettyRpcServerStub extends BaseServerStub {
         this.serializationType = serializationType;
     }
 
-
     @Override
     public void run() throws Exception {
         final NettyRpcServerStub serverStub = this;
@@ -82,9 +81,7 @@ public class NettyRpcServerStub extends BaseServerStub {
         } finally {
             bossGroup.shutdownGracefully().sync();
             workerGroup.shutdownGracefully().sync();
-            removeService();
         }
-
     }
 
 }

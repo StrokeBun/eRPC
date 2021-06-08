@@ -37,6 +37,8 @@ public abstract class BaseServerStub implements ServerStub {
 
     private void init() {
         registerTable = new ConcurrentHashMap<>();
+        CustomShutdownHook customShutdownHook = new CustomShutdownHook();
+        customShutdownHook.clear();
     }
 
     @Override
@@ -53,7 +55,7 @@ public abstract class BaseServerStub implements ServerStub {
         log.info("register service: " + interfaceName + " in " + address);
     }
 
-    protected void removeService() throws UnknownHostException {
+    private void removeService() throws UnknownHostException {
         final int serverPort = configuration.getServerPort();
         final ServiceRegistry serviceRegistry = configuration.getServiceRegistry();
         String ip = InetAddress.getLocalHost().getHostAddress();
@@ -91,6 +93,22 @@ public abstract class BaseServerStub implements ServerStub {
 
     public Map<String, String> getRegisterTable() {
         return new HashMap<>(registerTable);
+    }
+
+    /**
+     * when server shutdown, unregister the service
+     */
+    private class CustomShutdownHook {
+        public void clear() {
+            log.info("add ShutdownHook for unregister service");
+            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                try {
+                    removeService();
+                } catch (UnknownHostException e) {
+                    log.info("unknown server host");
+                }
+            }));
+        }
     }
 
 }

@@ -59,7 +59,6 @@ public final class SocketServerStub extends BaseServerStub {
             }
         } finally {
             threadPool.shutdown();
-            removeService();
         }
     }
 
